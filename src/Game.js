@@ -8,7 +8,8 @@ class Game extends Component {
         this.state = {
             loaded: false,
             dealt: false,
-            select: {}
+            select: {},
+            move: null,
         };
         import('wasm-pusoy-dos').then(wasm => {
             o.wasm = wasm;
@@ -45,6 +46,12 @@ class Game extends Component {
         this.setState({dealt: true});
     }
     displayGame() {
+        return <div>
+            <div>{ this.displayCards() }</div>
+            <div>{ this.displayMove() }</div>
+        </div>;
+    }
+    displayCards() {
         let player = this.wasm.get_player(this.game, "player");
         let i = 0;
         let select = this.select.bind(this);
@@ -61,6 +68,14 @@ class Game extends Component {
             </div>;
         });
     }
+    displayMove() {
+        let selectedHand = this.wasm.get_hand_type(
+            Object.values(this.state.select)
+        );
+
+        return <span> { selectedHand.type } </span>;
+
+    }
     select(i, card) {
         let selected = this.state.select;
         card.joker = false;
@@ -69,10 +84,6 @@ class Game extends Component {
         } else {
             selected[i] = card;
         }
-        let selectedHand = this.wasm.get_hand_type(
-            Object.values(selected)
-        );
-        console.log(selectedHand);
         this.setState({select: selected});
     }
 }
