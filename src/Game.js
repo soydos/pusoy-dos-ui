@@ -69,11 +69,18 @@ class Game extends Component {
         });
     }
     displayMove() {
-        let selectedHand = this.wasm.get_hand_type(
-            Object.values(this.state.select)
-        );
 
-        return <span> { selectedHand.type } </span>;
+        if(this.state.select) {
+            let selectedHand = this.wasm.get_hand_type(
+                Object.values(this.state.select)
+            );
+
+            if(selectedHand){
+                return <span> { selectedHand.type } </span>;
+            }
+        }
+
+        return 'No hand selected';
 
     }
     select(i, card) {
