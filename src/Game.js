@@ -47,7 +47,7 @@ class Game extends Component {
     }
     displayGame() {
         return <div>
-            <div>{ this.displayCards() }</div>
+            <div className="cards">{ this.displayCards() }</div>
             <div>{ this.displayMove() }</div>
         </div>;
     }
@@ -62,9 +62,9 @@ class Game extends Component {
             let staticIndex = i;
             return <div id={`card-${i}`} 
                         onClick={(e)=>{select(staticIndex, card)}}
-                        className={cardSelected ? 'selected' : '' }
+                        className={`card ${cardSelected ? 'selected' : '' }`}
                     >
-                {card.card.rank} - {card.card.suit.name}
+                      <div className={`face rank-${card.card.rank} suit-${card.card.suit.name}`}></div>
             </div>;
         });
     }

@@ -1,0 +1,50 @@
+body
+  font-family: 'Cairo', sans-serif
+  background-color: #1b0e1b
+  color: #FFF
+
+.selected
+  outline: 10px solid rgba(255, 216, 5, .5)
+  z-index: 2
+
+.card
+  display: inline-block
+  width: 115px
+  height: 177px
+  margin-right: 1px
+  position: relative
+  .face
+    background-image: url("../dist/images/cards.jpg")
+    width: 100%
+    height: 100%
+    &.suit-clubs
+      background-position-y: 335px
+    &.suit-diamonds
+      background-position-y: 506px
+    &.suit-hearts
+      background-position-y: 174px
+    &.rank-Two
+      background-position-x: -115px
+    &.rank-Three
+      background-position-x: -225px
+    &.rank-Four
+      background-position-x: -340px
+    &.rank-Five
+      background-position-x: -455px
+    &.rank-Six
+      background-position-x: -570px
+    &.rank-Seven
+      background-position-x: -685px
+    &.rank-Eight
+      background-position-x: -800px
+    &.rank-Nine
+      background-position-x: -915px
+    &.rank-Ten
+      background-position-x: -1030px
+    &.rank-Jack
+      background-position-x: -1145px
+    &.rank-Queen
+      background-position-x: -1260px
+    &.rank-King
+      background-position-x: -1375px
+
