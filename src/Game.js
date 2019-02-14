@@ -70,17 +70,39 @@ class Game extends Component {
     }
     displayMove() {
 
+        let selectedMessage = 'Invalid hand!';
         if(this.state.select) {
             let selectedHand = this.wasm.get_hand_type(
                 Object.values(this.state.select)
             );
+            console.log(selectedHand);
+
 
             if(selectedHand){
-                return <span> { selectedHand.type } </span>;
+                switch(selectedHand.type) {
+                    case 'single':
+                        selectedMessage = `${
+                            selectedHand.cards.card.rank
+                        } of ${
+                            selectedHand.cards.card.suit.name
+                        }`;
+                        break;
+                    case 'pair':
+                    case 'prial':
+                        selectedMessage = `${
+                            selectedHand.type
+                        } of ${
+                            selectedHand.cards[0].card.rank
+                        }s`;
+                        break;
+                    default:
+                        selectedMessage = selectedHand.type;
+                }
+
             }
         }
 
-        return 'No hand selected';
+        return <span>{ selectedMessage }</span>;
 
     }
     select(i, card) {
