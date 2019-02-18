@@ -95,6 +95,21 @@ class Game extends Component {
                             selectedHand.cards[0].card.rank
                         }s`;
                         break;
+                    case 'fivecardtrick':
+                        switch(selectedHand.cards.trick_type) {
+                            case 'Flush':
+                                selectedMessage = `${
+                                    selectedHand.cards.cards[0].card.suit.name
+                                } flush`;
+                                break;
+                            case 'FullHouse':
+                                selectedMessage = 'Full House';
+                                break;
+                            default:
+                                selectedMessage = selectedHand.cards.trick_type;
+                                break;
+                        }
+                        break;
                     default:
                         selectedMessage = selectedHand.type;
                 }
