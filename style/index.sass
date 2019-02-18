@@ -1,3 +1,6 @@
+$card-width: 115px
+$card-height: 170px
+
 body
   font-family: 'Cairo', sans-serif
   background-color: #1b0e1b
@@ -8,17 +11,21 @@ body
   z-index: 2
 
 .card
+  transform: scale(0.7)
   display: inline-block
-  width: 115px
-  height: 170px
-  margin-right: 1px
+  width: $card-width
+  height: $card-height
   position: relative
+  border-radius: 5px
+  border: 1px solid #CCC
+  margin-left: -75px
+  &:first-child
+    margin-left: 0
   .face
     background-image: url("../dist/images/cards.jpg")
     width: 100%
     height: 100%
     overflow: hidden
-    border-radius: 5px
     &.suit-clubs
       background-position-y: 334px
     &.suit-diamonds
@@ -50,3 +57,21 @@ body
     &.rank-King
       background-position-x: -1375px
 
+.hidden-card-set
+  .hidden-card
+    transform: scale(0.7)
+    display: inline-block
+    width: $card-width
+    height: $card-height
+    background-image: url("../dist/images/back.jpg")
+    background-size: cover
+    background-position: center
+    overflow: hidden
+    border-radius: 5px
+    margin-left: -100px
+    &:first-child
+      margin-left: 0
+
+.left-panel
+  transform-origin: center left
+  transform: rotate(90deg) translateX(-100px)

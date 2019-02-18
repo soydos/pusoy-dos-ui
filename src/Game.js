@@ -8,6 +8,7 @@ class Game extends Component {
         this.state = {
             loaded: false,
             dealt: false,
+            players: ['player', 'cpu1', 'cpu2', 'cpu3'],
             select: {},
             move: null,
         };
@@ -22,7 +23,7 @@ class Game extends Component {
         } else {
             return (
                 <div>
-                    <h2>Cards</h2>
+                    <h2>Pusoy Dos</h2>
                     { this.getTable() }
                 </div>
             )
@@ -41,13 +42,28 @@ class Game extends Component {
     }
     deal() {
         this.game = this.wasm.create_game(
-            ["player", "cpu1", "cpu2", "cpu3"]
+            this.state.players
         );
         this.setState({dealt: true});
     }
     displayGame() {
         return <div>
-            <div className="cards">{ this.displayCards() }</div>
+            <div>
+                <div className="cpu2-cards hidden-card-set">
+                    { this.getHiddenCards('cpu2') }
+                </div>
+                <div>
+                    <div 
+                        className="cpu1-cards hidden-card-set left-panel"
+                    >
+                        { this.getHiddenCards('cpu1') }
+                    </div>
+                    <div className="table"></div>
+                    <div className="cpu3-cards hidden-card-set">
+                    </div>
+                </div>
+            </div>
+            <div className="player-cards">{ this.displayCards() }</div>
             <div>{ this.displayMove() }</div>
         </div>;
     }
@@ -129,6 +145,14 @@ class Game extends Component {
             selected[i] = card;
         }
         this.setState({select: selected});
+    }
+    getHiddenCards(id) {
+        let count = this.wasm.get_player(this.game, id).length;
+        let cards = [];
+        while(count--){
+           cards.push(<div class='hidden-card'></div>); 
+        }
+        return cards;
     }
 }
 
