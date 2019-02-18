@@ -32,7 +32,7 @@ class Game extends Component {
     getTable() {
         if(this.state.dealt) {
             return (
-                <div>
+                <div className="game">
                     { this.displayGame() }
                 </div>
             );
