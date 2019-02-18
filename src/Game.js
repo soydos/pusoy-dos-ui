@@ -59,7 +59,10 @@ class Game extends Component {
                         { this.getHiddenCards('cpu1') }
                     </div>
                     <div className="table"></div>
-                    <div className="cpu3-cards hidden-card-set">
+                    <div 
+                        className="cpu3-cards hidden-card-set right-panel"
+                    >
+                        { this.getHiddenCards('cpu3') }
                     </div>
                 </div>
             </div>
