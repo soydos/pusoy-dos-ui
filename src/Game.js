@@ -1,162 +1,128 @@
-import React, { Component} from "react";
+import React, { useState, useEffect, useRef } from 'react';
 
-class Game extends Component {
-    constructor() {
-        super();
+const Game = () => {
+  // Just hardcode for now
+  const players = [
+    'player',
+    'cpu1',
+    'cpu2',
+    'cpu3',
+  ];
 
-        let o = this;
-        this.state = {
-            loaded: false,
-            dealt: false,
-            players: ['player', 'cpu1', 'cpu2', 'cpu3'],
-            select: {},
-            move: null,
-        };
-        import('wasm-pusoy-dos').then(wasm => {
-            o.wasm = wasm;
-            o.setState({loaded: true});
-        });
-    }
-    render() {
-        if (!this.state.loaded) {
-            return <h1>Loading</h1>;
-        } else {
-            return (
-                <div>
-                    <h2>Pusoy Dos</h2>
-                    { this.getTable() }
-                </div>
-            )
+  // State
+  const [ loaded, setLoaded ] = useState(false);
+  const [ dealed, setDealed ] = useState(false);
+  const [ select, setSelect ] = useState({});
+  const [ selectedHand, setSelectedHand ] = useState('Pass');
+
+  // WASM instance, available at wasm.current
+  const wasmRef = useRef(null);
+
+  // GAME instance, available at game.current
+  const gameRef = useRef(null);
+
+  // Load WASM library
+  useEffect(() => {
+    import('wasm-pusoy-dos').then(wasm => {
+      wasmRef.current = wasm;
+      setLoaded(true);
+    });
+  }, []);
+
+  // Get Move Label
+  useEffect(() => {
+    const move = wasmRef.current &&
+      wasmRef.current.get_hand_type(Object.values(select)) ||
+      {type: 'Invalid Hand'};
+
+    switch (move.type) {
+      case 'single':
+        setSelectedHand(`${move.cards.card.rank} of ${move.cards.card.suit.name}`);
+        break;
+      case 'pair':
+      case 'prail':
+        setSelectedHand(`${move.type} of ${move.cards[0].card.rank}`);
+        break;
+      case 'fivecardtrick':
+        switch (move.cards.trick_type) {
+          case 'Flush':
+            setSelectedHand(`${move.cards.cards[0].card.suit.name} flush`);
+            break;
+          case 'FullHouse':
+            setSelectedHand(`Full House`);
+            break;
+          default:
+            setSelectedHand(move.cards.trick_type);
+            break;
         }
+        break;
+      default:
+        setSelectedHand(move.type);
     }
-    getTable() {
-        if(this.state.dealt) {
-            return (
-                <div className="game">
-                    { this.displayGame() }
-                </div>
-            );
-        } else {
-            return <button onClick={this.deal.bind(this)}>deal!</button>
-        }
-    }
-    deal() {
-        this.game = this.wasm.create_game(
-            this.state.players
-        );
-        this.setState({dealt: true});
-    }
-    displayGame() {
-        return <div>
-            <div>
-                <div className="cpu2-cards hidden-card-set">
-                    { this.getHiddenCards('cpu2') }
-                </div>
-                <div>
-                    <div 
-                        className="cpu1-cards hidden-card-set left-panel"
-                    >
-                        { this.getHiddenCards('cpu1') }
-                    </div>
-                    <div className="table"></div>
-                    <div 
-                        className="cpu3-cards hidden-card-set right-panel"
-                    >
-                        { this.getHiddenCards('cpu3') }
-                    </div>
-                </div>
-            </div>
-            <div className="player-cards">{ this.displayCards() }</div>
-            <div>{ this.displayMove() }</div>
-        </div>;
-    }
-    displayCards() {
-        let player = this.wasm.get_player(this.game, "player");
-        let i = 0;
-        let select = this.select.bind(this);
-        let selected = this.state.select;
-        return player.map(card => {
-            i++;
-            let cardSelected = selected[i];
-            let staticIndex = i;
-            return <div id={`card-${i}`} 
-                        onClick={(e)=>{select(staticIndex, card)}}
-                        className={`card ${cardSelected ? 'selected' : '' }`}
-                    >
-                      <div className={`face rank-${card.card.rank} suit-${card.card.suit.name}`}></div>
-            </div>;
-        });
-    }
-    displayMove() {
+  }, [select, wasmRef.current]);
 
-        let selectedMessage = 'Invalid hand!';
-        if(this.state.select) {
-            let selectedHand = this.wasm.get_hand_type(
-                Object.values(this.state.select)
-            );
-            console.log(selectedHand);
+  // Functions/Callbacks
+  function onDeal() {
+    gameRef.current = wasmRef.current.create_game(players);
+    setDealed(true);
+  }
 
+  function getHiddenCards(player) {
+    return wasmRef.current.get_player(gameRef.current, player).map((_, index) =>
+      <div className='hidden-card' key={ index } />
+    );
+  }
 
-            if(selectedHand){
-                switch(selectedHand.type) {
-                    case 'single':
-                        selectedMessage = `${
-                            selectedHand.cards.card.rank
-                        } of ${
-                            selectedHand.cards.card.suit.name
-                        }`;
-                        break;
-                    case 'pair':
-                    case 'prial':
-                        selectedMessage = `${
-                            selectedHand.type
-                        } of ${
-                            selectedHand.cards[0].card.rank
-                        }s`;
-                        break;
-                    case 'fivecardtrick':
-                        switch(selectedHand.cards.trick_type) {
-                            case 'Flush':
-                                selectedMessage = `${
-                                    selectedHand.cards.cards[0].card.suit.name
-                                } flush`;
-                                break;
-                            case 'FullHouse':
-                                selectedMessage = 'Full House';
-                                break;
-                            default:
-                                selectedMessage = selectedHand.cards.trick_type;
-                                break;
-                        }
-                        break;
-                    default:
-                        selectedMessage = selectedHand.type;
-                }
+  function getPlayerCards() {
+    const cards = wasmRef.current.get_player(gameRef.current, 'player');
 
-            }
-        }
+    return cards.map((card, index) =>
+      <div
+        className={ `card ${select[index] ? 'selected' : ''}` }
+        key={ index }
+        onClick={() => selectCard(index, card)}
+      >
+        <div className={ `face rank-${card.card.rank} suit-${card.card.suit.name}` } />
+      </div>
+    );
+  }
 
-        return <span>{ selectedMessage }</span>;
-
+  function selectCard(index, card) {
+    card.joker = false;
+    if (select[index]) {
+      const filteredSelect = Object.assign({}, ...Object.keys(select)
+        .filter(key => key !== String(index))
+        .map(key => ({ [key]: select[key] }))
+      );
+      setSelect(filteredSelect);
+    } else {
+      setSelect({...select, [index]: card});
     }
-    select(i, card) {
-        let selected = this.state.select;
-        card.joker = false;
-        if(selected[i]) {
-            delete selected[i];
-        } else {
-            selected[i] = card;
-        }
-        this.setState({select: selected});
-    }
-    getHiddenCards(id) {
-        let count = this.wasm.get_player(this.game, id).length;
-        let cards = [];
-        while(count--){
-           cards.push(<div class='hidden-card'></div>); 
-        }
-        return cards;
-    }
+  }
+
+  // HTML parts, could be split into own components
+  const table = dealed ? (
+    <>
+      <div className='opponent-cards'>
+        <div className='cpu1-cards hidden-card-set'>{ getHiddenCards('cpu1') }</div>
+        <div className='cpu2-cards hidden-card-set'>{ getHiddenCards('cpu2') }</div>
+        <div className='cpu3-cards hidden-card-set'>{ getHiddenCards('cpu3') }</div>
+      </div>
+      <div className='player-cards'>{ getPlayerCards() }</div>
+      <div>{ selectedHand }</div>
+    </>
+  ) : (
+    <button onClick={onDeal}>Deal!</button>
+  );
+
+  return loaded ? (
+    <div>
+      <h2>Pusoy Dos</h2>
+      { table }
+    </div>
+  ) : (
+    <h1>Loading</h1>
+  );
 }
 
 export default Game;
