@@ -115,7 +115,9 @@ const Game = () => {
                 { getHiddenCards('cpu3') }
             </div>
           </div>
-          <div className='player-cards'>{ getPlayerCards() }</div>
+          <div className='player-cards'>
+            { getPlayerCards() }
+          </div>
           <div>{ selectedHand }</div>
       </div>
     </>
