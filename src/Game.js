@@ -103,13 +103,21 @@ const Game = () => {
   // HTML parts, could be split into own components
   const table = dealed ? (
     <>
-      <div className='opponent-cards'>
-        <div className='cpu1-cards hidden-card-set'>{ getHiddenCards('cpu1') }</div>
-        <div className='cpu2-cards hidden-card-set'>{ getHiddenCards('cpu2') }</div>
-        <div className='cpu3-cards hidden-card-set'>{ getHiddenCards('cpu3') }</div>
+      <div className='game'>
+          <div className='opponent-cards'>
+            <div className='cpu2-cards hidden-card-set'>
+                { getHiddenCards('cpu2') }
+            </div>
+            <div className='cpu1-cards hidden-card-set left-panel'>
+                { getHiddenCards('cpu1') }
+            </div>
+            <div className='cpu3-cards hidden-card-set right-panel'>
+                { getHiddenCards('cpu3') }
+            </div>
+          </div>
+          <div className='player-cards'>{ getPlayerCards() }</div>
+          <div>{ selectedHand }</div>
       </div>
-      <div className='player-cards'>{ getPlayerCards() }</div>
-      <div>{ selectedHand }</div>
     </>
   ) : (
     <button onClick={onDeal}>Deal!</button>
