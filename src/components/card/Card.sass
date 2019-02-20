@@ -1,0 +1,62 @@
+@import '../../../style/variables'
+
+.selected
+  box-shadow: 0 0 5px 5px rgba(255, 216, 5, 0.3)
+  top: -50px
+
+.card
+  background: white
+  border: 1px solid #CCC
+  border-radius: 5px
+  position: absolute
+  height: $card-height
+  width: $card-width
+  overflow: hidden
+  transition: top 0.1s
+  transition-timing-function: linear
+  &:not(.selected)
+    top: 0
+  &:hover:not(.selected):not(.back)
+    transition: top 0.25s
+    top: -25px
+
+  .graphic
+    background-image: url('../../../dist/images/cards.jpg')
+    height: 100%
+    width: 100%
+    &.clubs
+      background-position-y: 334px
+    &.diamonds
+      background-position-y: 502px
+    &.hearts
+      background-position-y: 168px
+    &.Two
+      background-position-x: -115px
+    &.Three
+      background-position-x: -225px
+    &.Four
+      background-position-x: -340px
+    &.Five
+      background-position-x: -455px
+    &.Six
+      background-position-x: -570px
+    &.Seven
+      background-position-x: -685px
+    &.Eight
+      background-position-x: -800px
+    &.Nine
+      background-position-x: -915px
+    &.Ten
+      background-position-x: -1030px
+    &.Jack
+      background-position-x: -1145px
+    &.Queen
+      background-position-x: -1260px
+    &.King
+      background-position-x: -1375px
+
+.back
+  .graphic
+    background-image: url('../../../dist/images/back.jpg')
+    background-size: 100% 100%
+    background-repeat: no-repeat
