@@ -2,12 +2,13 @@ import React from 'react';
 
 import css from './Card.sass';
 
-const Card = ({ card, back, style, onClick, selected }) => {
+const Card = ({ card, back, style, onClick, selected, dragging }) => {
 
   const cardClassName = [
     css.card,
-    selected && css.selected,
     back && css.back,
+    selected && css.selected,
+    dragging && css.dragging,
   ].filter(c => c).join(' ');
 
   const faceClassName = [

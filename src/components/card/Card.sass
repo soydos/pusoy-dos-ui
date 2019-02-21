@@ -4,6 +4,9 @@
   box-shadow: 0 0 5px 5px rgba(255, 216, 5, 0.3)
   top: -50px
 
+.dragging
+  top: -25px
+
 .card
   background: white
   border: 1px solid #CCC
@@ -12,13 +15,11 @@
   height: $card-height
   width: $card-width
   overflow: hidden
-  transition: top 0.1s
-  transition-timing-function: linear
-  &:not(.selected)
+  transition: top 0.25s
+  &:not(.dragging)
+    transition: all 0.25s
+  &:not(.selected):not(.dragging)
     top: 0
-  &:hover:not(.selected):not(.back)
-    transition: top 0.25s
-    top: -25px
 
   .graphic
     background-image: url('../../../dist/images/cards.jpg')
