@@ -50,7 +50,6 @@ const Player = ({ cards, onSelect }) => {
       setDragged(false);
     });
     const dragSubscription = drag$.subscribe(move => {
-      console.log(move);
       const mouseX = getMouseX(move);
       const cardLeft = Math.min(
         width - 115,

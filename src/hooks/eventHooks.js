@@ -27,7 +27,6 @@ export const useDragObservable = (element) => {
 
     const drag$ = start$.pipe(
       mergeMap(start => {
-        start.preventDefault();
 
         return move$.pipe(
           map(move => {
