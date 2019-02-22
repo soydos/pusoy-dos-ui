@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
@@ -48,6 +49,12 @@ module.exports = {
     }
   },
   plugins: [
+    new HtmlWebpackPlugin({
+        template: './assets/index.html',
+        templateParameters: {
+            ga: process.env.GA || 'xxxxxx-x'
+        }
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
       chunkFilename: '[name].[contenthash].css',
