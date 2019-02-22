@@ -54,12 +54,14 @@ module.exports = {
       chunkFilename: '[name].[contenthash].css',
     }),
     new HtmlWebpackPlugin({template: './assets/index.html'}),
-    new CleanWebpackPlugin(['./dist/*'])
+    new CleanWebpackPlugin(['dist'], {
+      root: path.resolve(__dirname, '../')
+    })
   ],
   output: {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, '../', 'dist')
   },
 };
 
