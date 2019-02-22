@@ -17,16 +17,18 @@
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.0",
     "file-loader": "^3.0.1",
+    "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.29.3",
+    "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
+    "rxjs": "^6.4.0",
     "wasm-pusoy-dos": "^0.1.0"
   }
 }
