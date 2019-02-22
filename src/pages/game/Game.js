@@ -22,7 +22,7 @@ const Game = () => {
 
   // Load WASM library
   useEffect(() => {
-    import('wasm-pusoy-dos').then(wasm => {
+    import( /* webpackChunkName: "wasm" */'wasm-pusoy-dos').then(wasm => {
       setWasm(wasm);
     });
   }, []);
