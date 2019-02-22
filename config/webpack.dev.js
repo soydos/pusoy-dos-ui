@@ -9,7 +9,7 @@ module.exports = env => merge({
     new HtmlWebpackPlugin({
         template: './assets/index.html',
         templateParameters: {
-            ga: env.ga
+            ga: 'xxxxxx-x'
         }
     }),
   ]
