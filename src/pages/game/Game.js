@@ -31,31 +31,34 @@ const Game = () => {
   useEffect(() => {
     const move = wasm &&
       wasm.get_hand_type(selected) ||
-      {type: 'Invalid Hand'};
+      {type: "Invalid Hand"};
 
-    switch (move.type) {
+    const type = move.type;
+    const hand = move.cards;
+
+    switch (type) {
       case 'single':
-        setHandLabel(`${move.cards.card.rank} of ${move.cards.card.suit.name}`);
+        setHandLabel(`${hand.card.rank} of ${hand.card.suit}`);
         break;
       case 'pair':
       case 'prial':
-        setHandLabel(`${move.type} of ${move.cards[0].card.rank}`);
+        setHandLabel(`${type} of ${hand[0].card.rank}s`);
         break;
       case 'fivecardtrick':
-        switch (move.cards.trick_type) {
-          case 'Flush':
-            setHandLabel(`${move.cards.cards[0].card.suit.name} flush`);
+        switch (hand.trick_type) {
+          case 'flush':
+            setHandLabel(`${hand.cards[0].card.suit} flush`);
             break;
-          case 'FullHouse':
+          case 'fullhouse':
             setHandLabel(`Full House`);
             break;
           default:
-            setHandLabel(move.cards.trick_type);
+            setHandLabel(type);
             break;
         }
         break;
       default:
-        setHandLabel(move.type);
+        setHandLabel(type);
     }
   }, [selected, wasm]);
 

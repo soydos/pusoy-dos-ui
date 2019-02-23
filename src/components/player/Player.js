@@ -97,7 +97,9 @@ const Player = ({ cards, onSelect }) => {
   }
 
   function selectCard(card, index) {
-    card.joker = false;
+    // card is the actual card (could be joker)
+    // rank and suit are intended value (what you pick the joker to be)
+    card.card = {...card};
     if (selected[index]) {
       const filteredSelect = Object.assign({}, ...Object.keys(selected)
         .filter(key => key !== String(index))
@@ -125,7 +127,7 @@ const Player = ({ cards, onSelect }) => {
           return (
             <Card
               key={index}
-              card={card.card}
+              card={card}
               selected={selected[index] !== undefined}
               dragging={cardDragging}
               style={{zIndex: position, left: left + 'px'}}
