@@ -97,9 +97,7 @@ const Player = ({ cards, onSelect }) => {
   }
 
   function selectCard(card, index) {
-    // card is the actual card (could be joker)
-    // rank and suit are intended value (what you pick the joker to be)
-    card.card = {...card};
+    card = {rank: card.standard[0], suit: card.standard[1], is_joker: false};
     if (selected[index]) {
       const filteredSelect = Object.assign({}, ...Object.keys(selected)
         .filter(key => key !== String(index))

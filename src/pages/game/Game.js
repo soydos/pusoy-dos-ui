@@ -38,16 +38,16 @@ const Game = () => {
 
     switch (type) {
       case 'single':
-        setHandLabel(`${hand.card.rank} of ${hand.card.suit}`);
+        setHandLabel(`${hand.rank} of ${hand.suit}`);
         break;
       case 'pair':
       case 'prial':
-        setHandLabel(`${type} of ${hand[0].card.rank}s`);
+        setHandLabel(`${type} of ${hand[0].rank}s`);
         break;
       case 'fivecardtrick':
         switch (hand.trick_type) {
           case 'flush':
-            setHandLabel(`${hand.cards[0].card.suit} flush`);
+            setHandLabel(`${hand.cards[0].suit} flush`);
             break;
           case 'fullhouse':
             setHandLabel(`Full House`);
