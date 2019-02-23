@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "http://soydos.com/*"
+  to = "https://soydos.com/:splat"
+  status = 301
+  force = true
