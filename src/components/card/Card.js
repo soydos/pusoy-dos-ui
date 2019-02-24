@@ -13,8 +13,9 @@ const Card = ({ card, back, style, onClick, selected, dragging }) => {
 
   const faceClassName = [
     css.graphic,
-    card && css[card.standard[0]],
-    card && css[card.standard[1]],
+    card && css[card.rank],
+    card && css[card.suit],
+    card && card.type === 'joker' && css.joker,
   ].filter(c => c).join(' ');
 
   return (

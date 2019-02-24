@@ -36,24 +36,35 @@ const Game = () => {
     const type = move.type;
     const hand = move.cards;
 
+    let joker = false;
+
     switch (type) {
       case 'single':
-        setHandLabel(`${hand.rank} of ${hand.suit}`);
+        joker = hand.is_joker;
+        setHandLabel(`${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`);
         break;
       case 'pair':
       case 'prial':
-        setHandLabel(`${type} of ${hand[0].rank}s`);
+        joker = hand.some(card => card.is_joker);
+        setHandLabel(`${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`);
         break;
       case 'fivecardtrick':
         switch (hand.trick_type) {
           case 'flush':
-            setHandLabel(`${hand.cards[0].suit} flush`);
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`);
             break;
           case 'fullhouse':
-            setHandLabel(`Full House`);
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`Full House${joker ? ' (Joker)' : ''}`);
+            break;
+          case 'fourofakind':
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`Four of a Kind${joker ? ' (Joker)' : ''}`);
             break;
           default:
-            setHandLabel(type);
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`${type}${joker ? ' (Joker)' : ''}`);
             break;
         }
         break;

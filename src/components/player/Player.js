@@ -97,7 +97,14 @@ const Player = ({ cards, onSelect }) => {
   }
 
   function selectCard(card, index) {
-    card = {rank: card.standard[0], suit: card.standard[1], is_joker: false};
+    // make all jokers two of spades (until select feature done)
+    const joker = { rank: 'two', suit: 'spades' };
+    const playedCard = {
+      ...joker,
+      ...card, 
+      is_joker: card.type === 'joker'
+    };
+
     if (selected[index]) {
       const filteredSelect = Object.assign({}, ...Object.keys(selected)
         .filter(key => key !== String(index))
@@ -105,7 +112,7 @@ const Player = ({ cards, onSelect }) => {
       );
       setSelected(filteredSelect);
     } else {
-      setSelected({...selected, [index]: card});
+      setSelected({...selected, [index]: playedCard});
     }
   }
 
