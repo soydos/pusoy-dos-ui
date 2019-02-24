@@ -97,7 +97,14 @@ const Player = ({ cards, onSelect }) => {
   }
 
   function selectCard(card, index) {
-    card.joker = false;
+    // make all jokers two of spades (until select feature done)
+    const joker = { rank: 'two', suit: 'spades' };
+    const playedCard = {
+      ...joker,
+      ...card, 
+      is_joker: card.type === 'joker'
+    };
+
     if (selected[index]) {
       const filteredSelect = Object.assign({}, ...Object.keys(selected)
         .filter(key => key !== String(index))
@@ -105,7 +112,7 @@ const Player = ({ cards, onSelect }) => {
       );
       setSelected(filteredSelect);
     } else {
-      setSelected({...selected, [index]: card});
+      setSelected({...selected, [index]: playedCard});
     }
   }
 
@@ -125,7 +132,7 @@ const Player = ({ cards, onSelect }) => {
           return (
             <Card
               key={index}
-              card={card.card}
+              card={card}
               selected={selected[index] !== undefined}
               dragging={cardDragging}
               style={{zIndex: position, left: left + 'px'}}

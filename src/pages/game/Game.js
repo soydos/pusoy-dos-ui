@@ -31,31 +31,45 @@ const Game = () => {
   useEffect(() => {
     const move = wasm &&
       wasm.get_hand_type(selected) ||
-      {type: 'Invalid Hand'};
+      {type: "Invalid Hand"};
 
-    switch (move.type) {
+    const type = move.type;
+    const hand = move.cards;
+
+    let joker = false;
+
+    switch (type) {
       case 'single':
-        setHandLabel(`${move.cards.card.rank} of ${move.cards.card.suit.name}`);
+        joker = hand.is_joker;
+        setHandLabel(`${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`);
         break;
       case 'pair':
       case 'prial':
-        setHandLabel(`${move.type} of ${move.cards[0].card.rank}`);
+        joker = hand.some(card => card.is_joker);
+        setHandLabel(`${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`);
         break;
       case 'fivecardtrick':
-        switch (move.cards.trick_type) {
-          case 'Flush':
-            setHandLabel(`${move.cards.cards[0].card.suit.name} flush`);
+        switch (hand.trick_type) {
+          case 'flush':
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`);
             break;
-          case 'FullHouse':
-            setHandLabel(`Full House`);
+          case 'fullhouse':
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`Full House${joker ? ' (Joker)' : ''}`);
+            break;
+          case 'fourofakind':
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`Four of a Kind${joker ? ' (Joker)' : ''}`);
             break;
           default:
-            setHandLabel(move.cards.trick_type);
+            joker = hand.cards.some(card => card.is_joker);
+            setHandLabel(`${type}${joker ? ' (Joker)' : ''}`);
             break;
         }
         break;
       default:
-        setHandLabel(move.type);
+        setHandLabel(type);
     }
   }, [selected, wasm]);
 
