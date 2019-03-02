@@ -7,6 +7,9 @@ import Card from '../card/Card';
 import css from './Player.sass';
 
 const Player = ({ cards, onSelect }) => {
+  // Hardcode for now
+  const cardOverlap = 30;
+
   const [ selected, setSelected ] = useState({});
   const [ order, setOrder ] = useState(cards.map((_, index) => index));
   const [ startIndex, setStartIndex ] = useState(0);
@@ -15,11 +18,18 @@ const Player = ({ cards, onSelect }) => {
   const [ dragged, setDragged ] = useState(false);
   const [ draggingLeft, setDraggingLeft ] = useState(0);
 
+  const [ cardWidth, setCardWidth ] = useState(0);
+
   const playerRef = useRef(null);
 
   const dragObservables = useDragObservable(playerRef.current);
 
-  const width = cards.length * 30 + 85;
+  const width = cards.length * cardOverlap + (cardWidth - cardOverlap);
+
+   useEffect(() => {
+    const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
+    setCardWidth(width);
+  });
 
   // Selected Card Callback
   useEffect(() => {
@@ -52,13 +62,13 @@ const Player = ({ cards, onSelect }) => {
     const dragSubscription = drag$.subscribe(move => {
       const mouseX = getMouseX(move);
       const cardLeft = Math.min(
-        width - 115,
+        width - cardWidth,
         Math.max(
           0,
           mouseX - _startX
         )
       );
-      const _moveIndex = getCardIndex(cardLeft + 15);
+      const _moveIndex = getCardIndex(cardLeft + (cardOverlap / 2));
       setDragging(true);
       setDraggingLeft(cardLeft);
       setMoveIndex(_moveIndex);
@@ -93,7 +103,7 @@ const Player = ({ cards, onSelect }) => {
   }
 
   function getCardIndex(x) {
-    return Math.max(0, Math.min(Math.floor(x / 30), cards.length - 1));
+    return Math.max(0, Math.min(Math.floor(x / cardOverlap), cards.length - 1));
   }
 
   function selectCard(card, index) {
@@ -101,7 +111,7 @@ const Player = ({ cards, onSelect }) => {
     const joker = { rank: 'two', suit: 'spades' };
     const playedCard = {
       ...joker,
-      ...card, 
+      ...card,
       is_joker: card.type === 'joker'
     };
 
@@ -120,14 +130,14 @@ const Player = ({ cards, onSelect }) => {
     <div
       ref={playerRef}
       className={css.player}
-      style={{width: (cards.length * 30 + 85) + 'px'}}
+      style={{width: (cards.length * cardOverlap + (cardWidth - cardOverlap)) + 'px'}}
     >
       {
         cards.map((card, index) => {
 
           const position = order.findIndex(orderIndex => orderIndex === index);
           const cardDragging = dragging && position === startIndex;
-          const left = cardDragging ? draggingLeft : position * 30;
+          const left = cardDragging ? draggingLeft : position * cardOverlap;
 
           return (
             <Card
