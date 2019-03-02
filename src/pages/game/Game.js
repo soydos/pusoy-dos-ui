@@ -79,7 +79,6 @@ const Game = () => {
   }
 
   function onSubmit() {
-    console.log(selected);
     let result = wasm.submit_move(game, 'player', selected);
     console.log(result);
   }
