@@ -78,6 +78,12 @@ const Game = () => {
     setGame(wasm.create_game(players));
   }
 
+  function onSubmit() {
+    console.log(selected);
+    let result = wasm.submit_move(game, 'player', selected);
+    console.log(result);
+  }
+
   function getPlayerCards(player) {
     return wasm.get_player(game, player);
   }
@@ -104,6 +110,9 @@ const Game = () => {
           <Player cards={getPlayerCards(players[0])} onSelect={setSelected} />
         </div>
         <div>{handLabel}</div>
+        <div>
+            <button onClick={onSubmit}>play {handLabel}</button>
+        </div>
     </div>
   ) : (
     <button onClick={onDeal}>Deal!</button>
