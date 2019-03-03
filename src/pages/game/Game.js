@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 
+import Card from '../../components/card/Card';
+
 import css from './Game.sass';
 
 const Game = () => {
@@ -20,6 +22,7 @@ const Game = () => {
   const [ playerCards, setPlayerCards ] = useState([]);
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
+  const [ lastMove, setLastMove ] = useState(null);
 
   // Load WASM library
   useEffect(() => {
@@ -86,6 +89,8 @@ const Game = () => {
     let result = wasm.submit_move(game, 'player', selected);
     setPlayerCards(getPlayerCards(players[0]));
     setSelected([]);
+    setLastMove(wasm.get_last_move(game));
+
     console.log(result);
   }
 
@@ -95,6 +100,27 @@ const Game = () => {
 
   function getHiddenCards(player) {
     return getPlayerCards(player).map((_, index) => index);
+  }
+
+  function displayLastMove() {
+    if(!lastMove) {
+      return;
+    }
+    let debug = JSON.stringify(lastMove);
+    return (<div>
+      <pre>{debug}</pre>
+      <div>
+        { getHandCards(lastMove) }
+      </div>
+    </div>);
+  }
+
+  function getHandCards(move) {
+    if(move.cards.map) {
+        return move.cards.map((card) => <Card card={card}/>) ;
+    } else {
+        return <Card card={move.cards} />;
+    }
   }
 
   // HTML
@@ -110,6 +136,9 @@ const Game = () => {
           <div id={css.cpu3}>
             <Opponent cards={getHiddenCards(players[3])} vertical={true} />
           </div>
+        </div>
+        <div className={css.moves}>
+            { displayLastMove() }
         </div>
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
