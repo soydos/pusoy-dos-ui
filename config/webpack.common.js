@@ -53,7 +53,8 @@ module.exports = {
     new HtmlWebpackPlugin({
         template: './assets/index.html',
         templateParameters: {
-            ga: process.env.GA || 'xxxxxx-x'
+            ga: process.env.GA || 'xxxxxx-x',
+            commit_ref: process.env.COMMIT_REF || 'dev'
         }
     }),
     new MiniCssExtractPlugin({
