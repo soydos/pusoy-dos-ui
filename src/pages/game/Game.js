@@ -17,6 +17,7 @@ const Game = () => {
   // State
   const [ selected, setSelected] = useState([]);
   const [ handLabel, setHandLabel ] = useState('Pass');
+  const [ playerCards, setPlayerCards ] = useState([]);
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
 
@@ -75,11 +76,16 @@ const Game = () => {
 
   // Functions/Callbacks
   function onDeal() {
-    setGame(wasm.create_game(players));
+    let game = wasm.create_game(players)
+    setGame(game);
+    let player = wasm.get_player(game, players[0]);
+    setPlayerCards(player);
   }
 
   function onSubmit() {
     let result = wasm.submit_move(game, 'player', selected);
+    setPlayerCards(getPlayerCards(players[0]));
+    setSelected([]);
     console.log(result);
   }
 
@@ -106,7 +112,7 @@ const Game = () => {
           </div>
         </div>
         <div className={css.player}>
-          <Player cards={getPlayerCards(players[0])} onSelect={setSelected} />
+          <Player cards={playerCards} onSelect={setSelected} />
         </div>
         <div>{handLabel}</div>
         <div>

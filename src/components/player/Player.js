@@ -31,6 +31,10 @@ const Player = ({ cards, onSelect }) => {
     setCardWidth(width);
   });
 
+  useEffect(() => {
+    setSelected({});
+  }, [cards]);
+
   // Selected Card Callback
   useEffect(() => {
     if (onSelect) {
