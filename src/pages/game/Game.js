@@ -23,6 +23,7 @@ const Game = () => {
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
   const [ lastMove, setLastMove ] = useState(null);
+  const [ nextPlayer, setNextPlayer ] = useState(null);
 
   // Load WASM library
   useEffect(() => {
@@ -83,6 +84,7 @@ const Game = () => {
     setGame(game);
     let player = wasm.get_player(game, players[0]);
     setPlayerCards(player);
+    setNextPlayer(wasm.get_next_player(game));
   }
 
   function onSubmit() {
@@ -90,6 +92,7 @@ const Game = () => {
     setPlayerCards(getPlayerCards(players[0]));
     setSelected([]);
     setLastMove(wasm.get_last_move(game));
+    setNextPlayer(wasm.get_next_player(game));
 
     console.log(result);
   }
@@ -131,6 +134,7 @@ const Game = () => {
       return <Card 
                 card={card}
                 style={{zIndex: position, left: left + 'px'}}
+                key={index}
              />
     });
 
@@ -159,6 +163,9 @@ const Game = () => {
         <div>{handLabel}</div>
         <div>
             <button onClick={onSubmit}>play {handLabel}</button>
+        </div>
+        <div>
+          <pre> { nextPlayer } </pre>
         </div>
     </div>
   ) : (
