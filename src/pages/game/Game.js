@@ -116,11 +116,24 @@ const Game = () => {
   }
 
   function getHandCards(move) {
+    let cardList = [];
     if(move.cards.map) {
-        return move.cards.map((card) => <Card card={card}/>) ;
+      cardList = move.cards;
+    } else if (move.cards.cards) {
+      cardList = move.cards.cards; 
     } else {
-        return <Card card={move.cards} />;
+      cardList = [move.cards];
     }
+
+    return cardList.map((card, index) => {
+      let left = index * 30;
+      let position = index;
+      return <Card 
+                card={card}
+                style={{zIndex: position, left: left + 'px'}}
+             />
+    });
+
   }
 
   // HTML
