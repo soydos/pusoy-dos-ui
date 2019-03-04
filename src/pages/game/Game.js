@@ -76,7 +76,28 @@ const Game = () => {
       default:
         setHandLabel(type);
     }
-  }, [selected, wasm]);
+  }, [selected, wasm])
+
+  function cpuUpdate() {
+    return new Promise((resolve) => {
+        if(wasm && game && nextPlayer !== players[0]){
+            setTimeout(() => {
+                let cards = wasm.get_cpu_move(game);
+                wasm.submit_move(game, nextPlayer, cards);
+                setLastMove(wasm.get_last_move(game));
+                setNextPlayer(wasm.get_next_player(game));
+                resolve();
+            }, 2000);
+        } else {
+            resolve();
+        }
+    });
+
+  }
+
+  useEffect(() => {
+    cpuUpdate()
+  }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
   function onDeal() {
@@ -85,6 +106,7 @@ const Game = () => {
     let player = wasm.get_player(game, players[0]);
     setPlayerCards(player);
     setNextPlayer(wasm.get_next_player(game));
+
   }
 
   function onSubmit() {
@@ -95,25 +117,6 @@ const Game = () => {
     setNextPlayer(wasm.get_next_player(game));
 
     console.log(result);
-    if(result === true){
-        console.log('cpu move');
-        checkCPUMove();
-    }
-  }
-
-  function checkCPUMove() {
-    let player = wasm.get_next_player(game);
-    console.log('next player: ', player);
-    if(player !== players[0]){
-        setTimeout(()=>{
-            console.log('delayed cpu move');
-            let cards = wasm.get_cpu_move(game);
-            wasm.submit_move(game, player, cards);
-            setLastMove(wasm.get_last_move(game));
-            setNextPlayer(wasm.get_next_player(game));
-            checkCPUMove();
-        }, 1000);
-    }
   }
 
   function getPlayerCards(player) {
@@ -128,9 +131,7 @@ const Game = () => {
     if(!lastMove) {
       return;
     }
-    let debug = JSON.stringify(lastMove);
     return (<div>
-      <pre>{debug}</pre>
       <div>
         { getHandCards(lastMove) }
       </div>
@@ -186,7 +187,7 @@ const Game = () => {
             <button onClick={onSubmit}>play {handLabel}</button>
         </div>
         <div>
-          <pre> { nextPlayer } </pre>
+          <span> player: { nextPlayer } </span>
         </div>
     </div>
   ) : (
