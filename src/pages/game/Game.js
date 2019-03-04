@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 
+import Card from '../../components/card/Card';
+
 import css from './Game.sass';
 
 const Game = () => {
@@ -20,6 +22,8 @@ const Game = () => {
   const [ playerCards, setPlayerCards ] = useState([]);
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
+  const [ lastMove, setLastMove ] = useState(null);
+  const [ nextPlayer, setNextPlayer ] = useState(null);
 
   // Load WASM library
   useEffect(() => {
@@ -80,13 +84,36 @@ const Game = () => {
     setGame(game);
     let player = wasm.get_player(game, players[0]);
     setPlayerCards(player);
+    setNextPlayer(wasm.get_next_player(game));
   }
 
   function onSubmit() {
     let result = wasm.submit_move(game, 'player', selected);
     setPlayerCards(getPlayerCards(players[0]));
     setSelected([]);
+    setLastMove(wasm.get_last_move(game));
+    setNextPlayer(wasm.get_next_player(game));
+
     console.log(result);
+    if(result === true){
+        console.log('cpu move');
+        checkCPUMove();
+    }
+  }
+
+  function checkCPUMove() {
+    let player = wasm.get_next_player(game);
+    console.log('next player: ', player);
+    if(player !== players[0]){
+        setTimeout(()=>{
+            console.log('delayed cpu move');
+            let cards = wasm.get_cpu_move(game);
+            wasm.submit_move(game, player, cards);
+            setLastMove(wasm.get_last_move(game));
+            setNextPlayer(wasm.get_next_player(game));
+            checkCPUMove();
+        }, 1000);
+    }
   }
 
   function getPlayerCards(player) {
@@ -95,6 +122,43 @@ const Game = () => {
 
   function getHiddenCards(player) {
     return getPlayerCards(player).map((_, index) => index);
+  }
+
+  function displayLastMove() {
+    if(!lastMove) {
+      return;
+    }
+    let debug = JSON.stringify(lastMove);
+    return (<div>
+      <pre>{debug}</pre>
+      <div>
+        { getHandCards(lastMove) }
+      </div>
+    </div>);
+  }
+
+  function getHandCards(move) {
+    let cardList = [];
+    if(move.cards && move.cards.map) {
+      cardList = move.cards;
+    } else if (move.cards && move.cards.cards) {
+      cardList = move.cards.cards; 
+    } else if (move.cards) {
+      cardList = [move.cards];
+    } else {
+      cardList = []
+    }
+
+    return cardList.map((card, index) => {
+      let left = index * 30;
+      let position = index;
+      return <Card 
+                card={card}
+                style={{zIndex: position, left: left + 'px'}}
+                key={index}
+             />
+    });
+
   }
 
   // HTML
@@ -111,12 +175,18 @@ const Game = () => {
             <Opponent cards={getHiddenCards(players[3])} vertical={true} />
           </div>
         </div>
+        <div className={css.moves}>
+            { displayLastMove() }
+        </div>
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
         </div>
         <div>{handLabel}</div>
         <div>
             <button onClick={onSubmit}>play {handLabel}</button>
+        </div>
+        <div>
+          <pre> { nextPlayer } </pre>
         </div>
     </div>
   ) : (
