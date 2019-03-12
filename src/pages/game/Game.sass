@@ -1,25 +1,48 @@
 .game
   display: flex
   flex-direction: column
+  height: 100vh
 
-.opponents
+.table
   display: grid
-  grid-template-areas: "cpu2 cpu2" "cpu1 cpu3"
+  grid-template-areas: "cpu2 cpu2 cpu2" "cpu1 table cpu3" ".... action ...." "player player player"
+  grid-template-rows: 10vw 1fr 10vh 200px
+  grid-template-columns: 10vw 1fr 10vw
+  height: 100%
+  position: relative
+  overflow: hidden
 
 .player
+  grid-area: player
   display: flex
   justify-content: center
-
-.moves
-  display: flex
+  align-self: end
 
 #cpu1
   grid-area: cpu1
+  justify-self: end
+  align-self: center
 
 #cpu2
   grid-area: cpu2
-  justify-self: center;
+  justify-self: center
+  align-self: end
 
 #cpu3
   grid-area: cpu3
-  justify-self: end;
+  justify-self: start
+  align-self: center
+
+.moves
+  grid-area: table
+  justify-self: center
+  align-self: center
+  height: var(--card-height)
+  position: relative
+
+.action
+  grid-area: action
+  justify-self: center
+
+.turn
+  box-shadow: 0 0 20px 10px red
