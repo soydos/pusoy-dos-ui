@@ -6,7 +6,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: process.env.PORT || 8080,
-    host: process.env.IP,
+    host: process.env.IP || '0.0.0.0',
     disableHostCheck: true
   }
 });

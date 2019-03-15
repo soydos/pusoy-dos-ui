@@ -5,6 +5,10 @@
 .dragging
   top: -25px
 
+.reordering
+  &:not(.dragging)
+    transition: all 0.25s
+
 .card
   background: white
   border: 1px solid #CCC
@@ -14,8 +18,6 @@
   width: var(--card-width)
   overflow: hidden
   transition: top 0.25s
-  &:not(.dragging)
-    transition: all 0.25s
   &:not(.selected):not(.dragging)
     top: 0
 
