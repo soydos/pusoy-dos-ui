@@ -54,6 +54,7 @@ const Player = ({ cards, onSelect }) => {
 
     let _startIndex = 0;
     let _startX = 0;
+    let _lastX = 0;
 
     let _scroll = 0;
     let _scrolling = 0;
@@ -70,8 +71,9 @@ const Player = ({ cards, onSelect }) => {
         return;
       }
 
-      _startIndex = getCardIndex(getMouseX(start));
+      _startIndex = getCardIndex(start.target.getBoundingClientRect().left - playerRef.current.getBoundingClientRect().left);
       _startX = getOffset(start);
+      _lastX = 0;
       setStartIndex(_startIndex);
       setDragged(false);
     });
@@ -93,6 +95,20 @@ const Player = ({ cards, onSelect }) => {
       setDragging(true);
       setDraggingLeft(cardLeft);
       setMoveIndex(_moveIndex);
+
+      // Scroll when dragging card to edges
+      const currentScroll = clampScroll(scroll.current + _scrolling);
+      const rightThreshold = playerRef.current.offsetWidth - currentScroll - (cardWidth * 1.25);
+      const leftThreshold = -currentScroll + (cardWidth / 2);
+      if (_lastX && cardLeft - _lastX > 0 && cardLeft > rightThreshold) {
+        _scrolling = Math.floor(rightThreshold - cardLeft);
+        scroll.current = clampScroll(scroll.current + _scrolling);
+      } else if (_lastX && cardLeft - _lastX < 0 && cardLeft < leftThreshold) {
+        _scrolling = Math.floor(leftThreshold - cardLeft);
+        scroll.current = clampScroll(scroll.current + _scrolling);
+      }
+      _lastX = cardLeft;
+
       if (!dragged && _startIndex !== _moveIndex) {
         setDragged(true);
       }
@@ -134,7 +150,7 @@ const Player = ({ cards, onSelect }) => {
 
   function clampScroll(scroll) {
     const minScroll = playerRef.current
-      ? playerRef.current.parentElement.offsetWidth - playerRef.current.scrollWidth
+      ? playerRef.current.parentElement.offsetWidth - (cards.length * cardOverlap + (cardWidth - cardOverlap))
       : -Infinity;
     return Math.min(0, Math.max(minScroll, scroll));
   }
