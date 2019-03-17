@@ -28,6 +28,8 @@ const Game = () => {
 
   const [ cardWidth, setCardWidth ] = useState(0);
 
+  const movesRef = useRef(null);
+
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
     setCardWidth(width);
@@ -93,6 +95,19 @@ const Game = () => {
                 let cards = wasm.get_cpu_move(game);
                 wasm.submit_move(game, nextPlayer, cards);
                 setLastMove(wasm.get_last_move(game));
+                if (cards.length) {
+                  const translateFrom = {
+                    'cpu1': 'translate(-50vw, 0)',
+                    'cpu2': 'translate(0, -40vh)',
+                    'cpu3': 'translate(50vw, 0)'
+                  };
+                  movesRef.current.style.transition = 'unset';
+                  movesRef.current.style.transform = translateFrom[nextPlayer];
+                  setTimeout(() => {
+                    movesRef.current.style.transition = 'transform 0.25s';
+                    movesRef.current.style.transform = 'unset';
+                  }, 0);
+                }
                 setNextPlayer(wasm.get_next_player(game));
                 resolve();
             }, 2000);
@@ -100,7 +115,6 @@ const Game = () => {
             resolve();
         }
     });
-
   }
 
   useEffect(() => {
@@ -145,6 +159,7 @@ const Game = () => {
 
     return (
       <div
+        ref={movesRef}
         className={css.moves}
         style={{ width: cardList.length * overlap + (cardWidth - overlap) + 'px' }}
       >
