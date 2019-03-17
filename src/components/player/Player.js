@@ -8,23 +8,23 @@ import css from './Player.sass';
 
 const Player = ({ cards, onSelect }) => {
 
-  const [ selected, setSelected ] = useState({});
+  const [ selected, setSelected ] = useState([]);
   const [ order, setOrder ] = useState(cards.map(card => card.id));
-  const [ startIndex, setStartIndex ] = useState(0);
-  const [ moveIndex, setMoveIndex ] = useState(0);
-  const [ dragging, setDragging ] = useState(false);
-  const [ dragged, setDragged ] = useState(false);
   const [ draggingLeft, setDraggingLeft ] = useState(0);
+  const [ jokerSelect, setJokerSelect ] = useState(undefined);
+  const [ jokerValue, setJokerValue ] = useState({rank: 'two', suit: 'spades'});
 
   const [ cardWidth, setCardWidth ] = useState(0);
 
   const playerWidth = useRef(0);
 
-  // Need the ref to be able to get and set current value in effect
-  const scrollRef = useRef(0);
-  // Need state to make react rerender (changing ref doesn't trigger rerender)
-  const [ scroll, setScroll] = useState(0);
+  const draggingRef = useRef([]);
+  const selectedRef = useRef([]);
 
+  // Need the ref to be able to get and set current value in effect
+  // Need state to make react rerender (changing ref doesn't trigger rerender)
+  const scrollRef = useRef(0);
+  const [ scroll, setScroll] = useState(0);
   const cardOverlapRef = useRef(30);
   const [ cardOverlap, setCardOverlap ] = useState(30);
 
@@ -41,15 +41,16 @@ const Player = ({ cards, onSelect }) => {
   }, []);
 
   useEffect(() => {
-    setSelected({});
+    setSelected([]);
     setOrder(order.filter(order => cards.some(card => card.id === order)));
   }, [cards]);
 
   // Selected Card Callback
   useEffect(() => {
     if (onSelect) {
-      onSelect(Object.values(selected));
+      onSelect(selected);
     }
+    selectedRef.current = selected.map(card => card.id);
   }, [selected]);
 
   // Reorder stuff
@@ -58,7 +59,7 @@ const Player = ({ cards, onSelect }) => {
 
     const { start$, drag$, end$ } = dragObservables;
 
-    let _startIndex = 0;
+    let _dragging = false;
     let _startX = 0;
     let _lastX = 0;
 
@@ -113,11 +114,8 @@ const Player = ({ cards, onSelect }) => {
         return;
       }
 
-      _startIndex = getCardIndex(start.target.getBoundingClientRect().left - playerRef.current.getBoundingClientRect().left);
       _startX = getOffset(start);
       _lastX = 0;
-      setStartIndex(_startIndex);
-      setDragged(false);
     });
     const dragSubscription = drag$.subscribe(move => {
       if (move.touches && move.touches.length > 1) {
@@ -138,35 +136,42 @@ const Player = ({ cards, onSelect }) => {
         _lastTouches = [...move.touches];
         return;
       }
-      const mouseX = getMouseX(move);
-      const cardLeft = Math.min(
-        playerWidth.current - cardWidth,
-        Math.max(
-          0,
-          mouseX - _startX
-        )
-      );
-      const _moveIndex = getCardIndex(cardLeft + (cardOverlapRef.current / 2));
-      setDragging(true);
-      setDraggingLeft(cardLeft);
-      setMoveIndex(_moveIndex);
 
-      // Scroll when dragging card to edges
-      const rightThreshold = playerRef.current.offsetWidth - scrollRef.current - (cardWidth * 1.25);
-      const leftThreshold = -scrollRef.current + (cardWidth / 2);
-      if (_lastX && cardLeft - _lastX > 0 && cardLeft > rightThreshold) {
-        updateScroll(Math.floor(rightThreshold - cardLeft));
-      } else if (_lastX && cardLeft - _lastX < 0 && cardLeft < leftThreshold) {
-        updateScroll(Math.floor(leftThreshold - cardLeft));
-      }
-      _lastX = cardLeft;
+      if (!_dragging) {
+        if (selectedRef.current.length) {
+          draggingRef.current = selectedRef.current;
+          _dragging = true;
+        } else {
+          updateScroll(getOffset(move) - _startX);
+        }
+      } else {
+        const mouseX = getMouseX(move);
+        const cardLeft = Math.min(
+          playerWidth.current - (draggingRef.current.length * cardOverlapRef.current + (cardWidth - cardOverlapRef.current)),
+          Math.max(
+            0,
+            mouseX - _startX
+          )
+        );
+        setDraggingLeft(cardLeft);
 
-      if (!dragged && _startIndex !== _moveIndex) {
-        setDragged(true);
+        // Scroll when dragging card to edges
+        const rightThreshold = playerRef.current.offsetWidth - scrollRef.current - (cardWidth * 1.25);
+        const leftThreshold = -scrollRef.current + (cardWidth / 2);
+        if (_lastX && cardLeft - _lastX > 0 && cardLeft > rightThreshold) {
+          updateScroll(Math.floor(rightThreshold - cardLeft));
+        } else if (_lastX && cardLeft - _lastX < 0 && cardLeft < leftThreshold) {
+          updateScroll(Math.floor(leftThreshold - cardLeft));
+        }
+        _lastX = cardLeft;
       }
     });
     const endSubscription = end$.subscribe(end => {
-      setDragging(false);
+      if (_dragging) {
+        setSelected([]);
+      }
+      draggingRef.current = [];
+      _dragging = false;
     });
 
     return () => {
@@ -177,11 +182,14 @@ const Player = ({ cards, onSelect }) => {
   },[dragObservables, cards]);
 
   useEffect(() => {
-    let newOrder = [...order];
-    newOrder.splice(moveIndex, 0, newOrder.splice(startIndex, 1)[0]);
+    let moveIndex = getCardIndex(draggingLeft + (cardOverlapRef.current / 2));
+    if (draggingRef.current.length === 0 || moveIndex === order.findIndex(id => id === draggingRef.current[0])) return;
+
+    let newOrder = order.filter(id => !draggingRef.current.includes(id));
+    newOrder.splice(moveIndex, 0, ...draggingRef.current);
+
     setOrder(newOrder);
-    setStartIndex(moveIndex);
-  }, [moveIndex]);
+  }, [draggingLeft]);
 
   function getMouseX(e) {
     const element = e.currentTarget;
@@ -204,30 +212,80 @@ const Player = ({ cards, onSelect }) => {
     return Math.min(0, Math.max(minScroll, scroll));
   }
 
-  function selectCard(card, index) {
+  function selectCard(card) {
     // make all jokers two of spades (until select feature done)
-    const joker = { rank: 'two', suit: 'spades' };
-    const playedCard = {
-      ...joker,
-      ...card,
-      is_joker: card.type === 'joker'
-    };
+    // const joker = { rank: 'two', suit: 'spades' };
+    // const playedCard = {
+    //   ...joker,
+    //   ...card,
+    //   is_joker: card.type === 'joker'
+    // };
 
-    if (selected[index]) {
-      const filteredSelect = Object.assign({}, ...Object.keys(selected)
-        .filter(key => key !== String(index))
-        .map(key => ({ [key]: selected[key] }))
-      );
-      setSelected(filteredSelect);
+    const filteredSelect = selected.filter(selectedCard => selectedCard.id !== card.id);
+
+    // if card wasn't already selected, select it!
+    if (filteredSelect.length === selected.length) {
+      // joker select
+      if (card.type === 'joker') {
+        setJokerSelect(card);
+        return;
+      }
+
+      setSelected([...selected, {...card, is_joker: false}]);
     } else {
-      setSelected({...selected, [index]: playedCard});
+      setSelected(filteredSelect);
     }
+  }
+
+  if (jokerSelect) {
+    const ranks = [
+      'two',
+      'three',
+      'four',
+      'five',
+      'six',
+      'seven',
+      'eight',
+      'nine',
+      'ten',
+      'jack',
+      'queen',
+      'king',
+      'ace'
+    ];
+    const suits = [
+      'clubs',
+      'hearts',
+      'diamonds',
+      'spades'
+    ];
+    return (
+      <div
+        className={css.player}
+      >
+        <select
+          onChange={({target}) => setJokerValue(value => ({...value, rank: target.value}))}
+          value={jokerValue.rank}
+        >
+          {ranks.map(rank => <option key={rank} value={rank}>{rank}</option>)}
+        </select>
+        <select
+          onChange={({target}) => setJokerValue(value => ({...value, suit: target.value}))}
+          value={jokerValue.suit}
+        >
+          {suits.map(suit => <option key={suit} value={suit}>{suit}</option>)}
+        </select>
+        <button onClick={() => { setSelected([...selected, {id: jokerSelect.id, ...jokerValue, is_joker: true}]); setJokerSelect(undefined); }}>
+          OK
+        </button>
+      </div>
+    );
   }
 
   return (
     <div
       ref={playerRef}
-      className={`${css.player} ${dragging ? css.reordering : ''}`}
+      className={`${css.player} ${draggingRef.current.length ? css.reordering : ''}`}
       style={{
         width: (cards.length * cardOverlapRef.current + (cardWidth - cardOverlapRef.current)) + 'px',
         transform: `translate(${scroll}px)`,
@@ -237,18 +295,19 @@ const Player = ({ cards, onSelect }) => {
         cards.map((card, index) => {
 
           const position = order.findIndex(key => key === card.id);
-          const cardDragging = dragging && position === startIndex;
-          const left = cardDragging ? draggingLeft : position * cardOverlapRef.current;
+          const draggingPosition = draggingRef.current.findIndex(key => key === card.id);
+          const cardDragging = draggingRef.current.includes(card.id);
+          const left = cardDragging ? draggingLeft + (draggingPosition * cardOverlapRef.current) : position * cardOverlapRef.current;
 
           return (
             <Card
               key={card.id}
               card={card}
-              selected={selected[card.id] !== undefined}
+              selected={selectedRef.current.includes(card.id)}
               dragging={cardDragging}
-              reordering={dragging}
+              reordering={draggingRef.current.length}
               style={{zIndex: position, left: left + 'px'}}
-              onClick={() => !dragged && selectCard(card, card.id)}
+              onClick={() => selectCard(card)}
             />
           );
         })
