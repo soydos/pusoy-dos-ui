@@ -4,6 +4,7 @@ import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 
 import Card from '../../components/card/Card';
+import NewGame from '../../components/new_game/NewGame';
 
 import css from './Game.sass';
 
@@ -197,6 +198,15 @@ const Game = () => {
 
   }
 
+  function getFrontPage(mainSection) {
+    return (<div className={css.splashscreen}>
+        <h1>soydos.com</h1>
+        <div>
+            {mainSection}
+        </div>
+    </div>);
+  }
+
   // HTML
   const table = game ? (
     <div className={css.game}>
@@ -222,13 +232,16 @@ const Game = () => {
       </div>
     </div>
   ) : (
-    <button onClick={onDeal}>Deal!</button>
+    getFrontPage(
+        <NewGame onClick={onDeal} />
+    )
+
   );
 
   return wasm ? (
     table
   ) : (
-    <h1>Loading</h1>
+    getFrontPage(<h1>Loading</h1>)
   );
 }
 
