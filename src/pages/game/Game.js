@@ -197,6 +197,16 @@ const Game = () => {
 
   }
 
+  function getFrontPage(mainSection) {
+    return (<div className={css.splashscreen}>
+        <h1>soydos.com</h1>
+        <h3>Pickering Rules Pusoy Dos</h3>
+        <div>
+            {mainSection}
+        </div>
+    </div>);
+  }
+
   // HTML
   const table = game ? (
     <div className={css.game}>
@@ -222,13 +232,28 @@ const Game = () => {
       </div>
     </div>
   ) : (
-    <button onClick={onDeal}>Deal!</button>
+    getFrontPage(
+        <div className={css.newGame}>
+            <h5>New Game</h5>
+            <p>Players: 4</p>
+            <p>Decks: 1</p>
+            <p>Jokers: 4</p>
+            <p>Reversals: on</p>
+            <button
+                className={css.button_calltoaction}
+                onClick={onDeal}
+            >
+            Deal!
+            </button>
+        </div>
+    )
+
   );
 
   return wasm ? (
     table
   ) : (
-    <h1>Loading</h1>
+    getFrontPage(<h1>Loading</h1>)
   );
 }
 
