@@ -200,7 +200,6 @@ const Game = () => {
   function getFrontPage(mainSection) {
     return (<div className={css.splashscreen}>
         <h1>soydos.com</h1>
-        <h3>Pickering Rules Pusoy Dos</h3>
         <div>
             {mainSection}
         </div>
@@ -235,10 +234,21 @@ const Game = () => {
     getFrontPage(
         <div className={css.newGame}>
             <h5>New Game</h5>
-            <p>Players: <span>4</span></p>
-            <p>Decks: <span>1</span></p>
-            <p>Jokers: <span>4</span></p>
-            <p>Rules: <span>Pickering
+            <p className={css.field}>
+                Players:
+                <span className={css.fieldValue}>4</span>
+            </p>
+            <p className={css.field}>
+                Decks:
+                <span className={css.fieldValue}>1</span>
+            </p>
+            <p className={css.field}>
+                Jokers:
+                <span className={css.fieldValue}>4</span>
+            </p>
+            <p className={css.field}>
+                Rules: 
+                <span className={css.fieldValue}>Pickering
                 <img
                     src="/assets/images/FlagOfYorkshire.svg"
                     height="30px"
@@ -250,7 +260,7 @@ const Game = () => {
                 className={css.button_calltoaction}
                 onClick={onDeal}
             >
-            Deal!
+            Deal
             </button>
         </div>
     )
