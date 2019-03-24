@@ -235,10 +235,17 @@ const Game = () => {
     getFrontPage(
         <div className={css.newGame}>
             <h5>New Game</h5>
-            <p>Players: 4</p>
-            <p>Decks: 1</p>
-            <p>Jokers: 4</p>
-            <p>Reversals: on</p>
+            <p>Players: <span>4</span></p>
+            <p>Decks: <span>1</span></p>
+            <p>Jokers: <span>4</span></p>
+            <p>Rules: <span>Pickering
+                <img
+                    src="/assets/images/FlagOfYorkshire.svg"
+                    height="30px"
+                    className={css.inlineFlag}
+                /></span>
+            </p>
+            <hr/>
             <button
                 className={css.button_calltoaction}
                 onClick={onDeal}
