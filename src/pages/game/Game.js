@@ -4,6 +4,7 @@ import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 
 import Card from '../../components/card/Card';
+import NewGame from '../../components/new_game/NewGame';
 
 import css from './Game.sass';
 
@@ -232,37 +233,7 @@ const Game = () => {
     </div>
   ) : (
     getFrontPage(
-        <div className={css.newGame}>
-            <h5>New Game</h5>
-            <p className={css.field}>
-                Players:
-                <span className={css.fieldValue}>4</span>
-            </p>
-            <p className={css.field}>
-                Decks:
-                <span className={css.fieldValue}>1</span>
-            </p>
-            <p className={css.field}>
-                Jokers:
-                <span className={css.fieldValue}>4</span>
-            </p>
-            <p className={css.field}>
-                Rules: 
-                <span className={css.fieldValue}>Pickering
-                <img
-                    src="/assets/images/FlagOfYorkshire.svg"
-                    height="30px"
-                    className={css.inlineFlag}
-                /></span>
-            </p>
-            <hr/>
-            <button
-                className={css.button_calltoaction}
-                onClick={onDeal}
-            >
-            Deal
-            </button>
-        </div>
+        <NewGame onClick={onDeal} />
     )
 
   );
