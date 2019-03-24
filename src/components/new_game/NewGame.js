@@ -1,6 +1,7 @@
 import React from 'react';
 
 import css from './NewGame.sass';
+import img from './yorkshire_flag.svg';
 
 const NewGame = ({onClick}) => {
 
@@ -23,7 +24,7 @@ const NewGame = ({onClick}) => {
             Rules: 
             <span className={css.fieldValue}>Pickering
             <img
-                src="/assets/images/FlagOfYorkshire.svg"
+                src={img}
                 height="30px"
                 className={css.inlineFlag}
             /></span>
