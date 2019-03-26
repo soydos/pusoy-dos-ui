@@ -22,15 +22,17 @@
     top: 0
   &.playedJoker
     overflow: visible
-    &::after
-      content: "joker"
+    &::before
+      content: "⬇ joker "
       font-weight: bold
       position: absolute
-      top: -30px
-      left: 5px
-      background-color: #EEE
-      border: 1px solid #222
+      top: -37px
+      left: 0
+      background-color: #FFF
       color: #222
+      padding: 3px 10px
+      opacity: 0.9
+      border-radius: 5px 5px 0 0
 
   .graphic
     background-image: url('../../../assets/images/cards.jpg')
