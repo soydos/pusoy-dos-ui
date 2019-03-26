@@ -1,5 +1,12 @@
+# force https
 [[redirects]]
   from = "http://soydos.com/*"
   to = "https://soydos.com/:splat"
   status = 301
   force = true
+
+# SPA rules
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
