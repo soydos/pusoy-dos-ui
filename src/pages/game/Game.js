@@ -93,6 +93,16 @@ const Game = () => {
     return new Promise((resolve) => {
         if(wasm && game && nextPlayer !== players[0]){
             setTimeout(() => {
+
+                if(!nextPlayer) {
+                    // todo some winners table intermediate bit
+                    console.log('game over!');
+                    setGame(null);
+                    setLastMove(null);
+                    setNextPlayer(null);
+                    return resolve();
+                }
+
                 let cards = wasm.get_cpu_move(game);
                 wasm.submit_move(game, nextPlayer, cards);
                 setLastMove(wasm.get_last_move(game));
