@@ -20,6 +20,17 @@
   transition: top 0.25s
   &:not(.selected):not(.dragging)
     top: 0
+  &.playedJoker
+    overflow: visible
+    &::after
+      content: "joker"
+      font-weight: bold
+      position: absolute
+      top: -30px
+      left: 5px
+      background-color: #EEE
+      border: 1px solid #222
+      color: #222
 
   .graphic
     background-image: url('../../../assets/images/cards.jpg')

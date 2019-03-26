@@ -187,6 +187,7 @@ const Game = () => {
   function getHandCards() {
     const cardList = getMoveCards();
 
+    console.log(cardList);
     return cardList.map((card, index) => {
       const style = { left : index * overlap + 'px' };
       return <Card

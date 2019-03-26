@@ -10,6 +10,7 @@ const Card = ({ card, back, style, onClick, selected, dragging, reordering }) =>
     selected && css.selected,
     dragging && css.dragging,
     reordering && css.reordering,
+    card && card.is_joker && css.playedJoker,
   ].filter(c => c).join(' ');
 
   const faceClassName = [
