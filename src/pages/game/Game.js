@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
-
 import Card from '../../components/card/Card';
 import NewGame from '../../components/new_game/NewGame';
+import SuggestedMove from '../../components/suggested_move/SuggestedMove';
 
 import css from './Game.sass';
 
@@ -22,10 +22,12 @@ const Game = () => {
   const [ selected, setSelected] = useState([]);
   const [ handLabel, setHandLabel ] = useState('Pass');
   const [ playerCards, setPlayerCards ] = useState([]);
+  const [ winners, setWinners ] = useState([]);
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
   const [ lastMove, setLastMove ] = useState(null);
   const [ nextPlayer, setNextPlayer ] = useState(null);
+  const [ showTips, setShowTips ] = useState(null);
 
   const [ cardWidth, setCardWidth ] = useState(0);
 
@@ -49,6 +51,10 @@ const Game = () => {
       wasm.get_hand_type(selected) ||
       {type: "Invalid Hand"};
 
+    setHandLabel(getHandDescription(move));
+  }, [selected, wasm])
+
+  function getHandDescription(move) {
     const type = move.type;
     const hand = move.cards;
 
@@ -57,37 +63,37 @@ const Game = () => {
     switch (type) {
       case 'single':
         joker = hand.is_joker;
-        setHandLabel(`${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`);
+        return `${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`;
         break;
       case 'pair':
       case 'prial':
         joker = hand.some(card => card.is_joker);
-        setHandLabel(`${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`);
+        return `${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`;
         break;
       case 'fivecardtrick':
         switch (hand.trick_type) {
           case 'flush':
             joker = hand.cards.some(card => card.is_joker);
-            setHandLabel(`${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`);
+            return `${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`;
             break;
           case 'fullhouse':
             joker = hand.cards.some(card => card.is_joker);
-            setHandLabel(`Full House${joker ? ' (Joker)' : ''}`);
+            return `Full House${joker ? ' (Joker)' : ''}`;
             break;
           case 'fourofakind':
             joker = hand.cards.some(card => card.is_joker);
-            setHandLabel(`Four of a Kind${joker ? ' (Joker)' : ''}`);
+            return `Four of a Kind${joker ? ' (Joker)' : ''}`;
             break;
           default:
             joker = hand.cards.some(card => card.is_joker);
-            setHandLabel(`${type}${joker ? ' (Joker)' : ''}`);
+            return `${type}${joker ? ' (Joker)' : ''}`;
             break;
         }
         break;
       default:
-        setHandLabel(type);
+        return type;
     }
-  }, [selected, wasm])
+  }
 
   function cpuUpdate() {
     return new Promise((resolve) => {
@@ -130,6 +136,7 @@ const Game = () => {
 
   useEffect(() => {
     cpuUpdate()
+    updateWinners()
   }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
@@ -143,6 +150,31 @@ const Game = () => {
     setNextPlayer(wasm.get_next_player(game));
   }
 
+  function updateWinners(){
+    let winnersList = wasm && game && wasm.get_winners(game);
+    setWinners(winnersList || []);
+  }
+
+  function onHelp() {
+    const lastMoveDescription = lastMove && getHandDescription(lastMove);
+    const suggestedMove = wasm.suggest_move(game, players[0]);
+
+    const move = lastMove || { type: false };
+    const description = lastMoveDescription || false;
+
+    if(showTips == null){
+      setShowTips(
+        <SuggestedMove
+          lastMoveType={move.type}
+          lastMove={description}
+          suggestedMove={suggestedMove}
+          close={()=>{setShowTips(null)}}
+        />)
+    } else {
+      setShowTips(null);
+    }
+  }
+
   function onSubmit() {
     let result = wasm.submit_move(game, 'player', selected);
     let joker = 0;
@@ -151,6 +183,7 @@ const Game = () => {
     setSelected([]);
     setLastMove(wasm.get_last_move(game));
     setNextPlayer(wasm.get_next_player(game));
+    setShowTips(null);
   }
 
   function getPlayerCards(player) {
@@ -233,13 +266,22 @@ const Game = () => {
         { displayLastMove() }
         {nextPlayer === players[0] &&
             <div className={css.action}>
-              <button onClick={onSubmit}>play {handLabel}</button>
+              <div className={css.action}>
+                <button onClick={onSubmit}>
+                  play {handLabel}
+                </button>
+              </div>
+
+              <div className={css.help}>
+                <span onClick={onHelp}>help!</span>
+              </div>
             </div>
         }
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
         </div>
       </div>
+      { showTips }
     </div>
   ) : (
     getFrontPage(
