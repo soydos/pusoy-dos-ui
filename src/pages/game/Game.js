@@ -23,6 +23,7 @@ const Game = () => {
   const [ handLabel, setHandLabel ] = useState('Pass');
   const [ playerCards, setPlayerCards ] = useState([]);
   const [ winners, setWinners ] = useState([]);
+  const [ gameOver, setGameOver ] = useState(false);
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
   const [ lastMove, setLastMove ] = useState(null);
@@ -103,7 +104,7 @@ const Game = () => {
                 if(!nextPlayer) {
                     // todo some winners table intermediate bit
                     console.log('game over!');
-                    setGame(null);
+                    setGameOver(true);
                     setLastMove(null);
                     setNextPlayer(null);
                     return resolve();
@@ -141,6 +142,11 @@ const Game = () => {
 
   // Functions/Callbacks
   function onDeal() {
+    setGameOver(false);
+    setLastMove(null);
+    setNextPlayer(null);
+    setWinners([]);
+
     let game = wasm.create_game(players)
     setGame(game);
     let player = wasm.get_player(game, players[0]);
@@ -153,6 +159,12 @@ const Game = () => {
   function updateWinners(){
     let winnersList = wasm && game && wasm.get_winners(game);
     setWinners(winnersList || []);
+  }
+
+  function displayWinners(){
+    return winners.map((winner, index) => {
+        return (<li key={`winner-${index}`}>{winner}</li>);
+    });
   }
 
   function onHelp() {
@@ -251,7 +263,7 @@ const Game = () => {
   }
 
   // HTML
-  const table = game ? (
+  const table = wasm && game && (
     <div className={css.game}>
       <div className={css.table}>
         <div id={css.cpu1} className={nextPlayer === players[1] ? css.turn : undefined}>
@@ -283,15 +295,40 @@ const Game = () => {
       </div>
       { showTips }
     </div>
-  ) : (
+  );
+
+  const newGame = (
     getFrontPage(
         <NewGame onClick={onDeal} />
     )
-
   );
 
+  const gameSummary = (
+    getFrontPage(
+      <div className={css.gameSummary}>
+        <h3>Game Rankings</h3>
+        <ol>
+          { displayWinners() }
+        </ol>
+        <button
+          className={css.button_calltoaction}
+          onClick={onDeal}
+        >
+          New Game
+        </button>
+      </div>
+    )
+  );
+
+  let page = newGame;
+  if(gameOver) {
+    page = gameSummary;
+  } else if (game) {
+    page = table;
+  }
+
   return wasm ? (
-    table
+    page
   ) : (
     getFrontPage(<h1>Loading</h1>)
   );
