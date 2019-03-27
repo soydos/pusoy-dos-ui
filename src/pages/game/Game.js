@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import { Link } from "react-router-dom";
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 import Card from '../../components/card/Card';
@@ -256,6 +257,7 @@ const Game = () => {
   function getFrontPage(mainSection) {
     return (<div className={css.splashscreen}>
         <h1>soydos.com</h1>
+        <Link to="/about">Rules</Link>
         <div>
             {mainSection}
         </div>
