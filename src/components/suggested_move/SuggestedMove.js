@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import css from './SuggestedMove.sass';
 import Card from '../card/Card';
 
@@ -44,6 +45,9 @@ const SuggestedMove = ({
     return (<div className={css.suggestedMove}>
         <div className={css.close} onClick={close}>x</div>
         { explanation }
+        <div>
+            <p><Link to="/about">See complete rules.</Link></p>
+        </div>
         <div>
             Suggested Move:
             <div className={css.suggestedHand}>
