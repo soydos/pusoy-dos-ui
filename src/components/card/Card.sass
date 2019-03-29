@@ -1,5 +1,4 @@
 .selected
-  box-shadow: 0 0 5px 5px rgba(255, 216, 5, 0.3)
   top: -50px
 
 .dragging
@@ -10,9 +9,8 @@
     transition: all 0.25s
 
 .card
-  background: white
   border: 1px solid #CCC
-  border-radius: 5px
+  border-radius: 9px
   position: absolute
   height: var(--card-height)
   width: var(--card-width)
@@ -35,44 +33,129 @@
       border-radius: 5px 5px 0 0
 
   .graphic
-    background-image: url('../../../assets/images/cards.jpg')
     height: 100%
     width: 100%
     &.clubs
-      background-position-y: 334px
+        &.two
+          background-image: url('../../../assets/images/cards/card-clubs-2.svg')
+        &.three
+          background-image: url('../../../assets/images/cards/card-clubs-3.svg')
+        &.four
+          background-image: url('../../../assets/images/cards/card-clubs-4.svg')
+        &.five
+          background-image: url('../../../assets/images/cards/card-clubs-5.svg')
+        &.six
+          background-image: url('../../../assets/images/cards/card-clubs-6.svg')
+        &.seven
+          background-image: url('../../../assets/images/cards/card-clubs-7.svg')
+        &.eight
+          background-image: url('../../../assets/images/cards/card-clubs-8.svg')
+        &.nine
+          background-image: url('../../../assets/images/cards/card-clubs-9.svg')
+        &.ten
+          background-image: url('../../../assets/images/cards/card-clubs-10.svg')
+        &.jack
+          background-image: url('../../../assets/images/cards/card-clubs-j.svg')
+        &.queen
+          background-image: url('../../../assets/images/cards/card-clubs-q.svg')
+        &.king
+          background-image: url('../../../assets/images/cards/card-clubs-k.svg')
+        &.ace
+          background-image: url('../../../assets/images/cards/card-clubs-a.svg')
+
+
     &.diamonds
-      background-position-y: 502px
+        &.two
+          background-image: url('../../../assets/images/cards/card-diamonds-2.svg')
+        &.three
+          background-image: url('../../../assets/images/cards/card-diamonds-3.svg')
+        &.four
+          background-image: url('../../../assets/images/cards/card-diamonds-4.svg')
+        &.five
+          background-image: url('../../../assets/images/cards/card-diamonds-5.svg')
+        &.six
+          background-image: url('../../../assets/images/cards/card-diamonds-6.svg')
+        &.seven
+          background-image: url('../../../assets/images/cards/card-diamonds-7.svg')
+        &.eight
+          background-image: url('../../../assets/images/cards/card-diamonds-8.svg')
+        &.nine
+          background-image: url('../../../assets/images/cards/card-diamonds-9.svg')
+        &.ten
+          background-image: url('../../../assets/images/cards/card-diamonds-10.svg')
+        &.jack
+          background-image: url('../../../assets/images/cards/card-diamonds-j.svg')
+        &.queen
+          background-image: url('../../../assets/images/cards/card-diamonds-q.svg')
+        &.king
+          background-image: url('../../../assets/images/cards/card-diamonds-k.svg')
+        &.ace
+          background-image: url('../../../assets/images/cards/card-diamonds-a.svg')
+
     &.hearts
-      background-position-y: 168px
-    &.two
-      background-position-x: -115px
-    &.three
-      background-position-x: -225px
-    &.four
-      background-position-x: -340px
-    &.five
-      background-position-x: -455px
-    &.six
-      background-position-x: -570px
-    &.seven
-      background-position-x: -685px
-    &.eight
-      background-position-x: -800px
-    &.nine
-      background-position-x: -915px
-    &.ten
-      background-position-x: -1030px
-    &.jack
-      background-position-x: -1145px
-    &.queen
-      background-position-x: -1260px
-    &.king
-      background-position-x: -1375px
+        &.two
+          background-image: url('../../../assets/images/cards/card-hearts-2.svg')
+        &.three
+          background-image: url('../../../assets/images/cards/card-hearts-3.svg')
+        &.four
+          background-image: url('../../../assets/images/cards/card-hearts-4.svg')
+        &.five
+          background-image: url('../../../assets/images/cards/card-hearts-5.svg')
+        &.six
+          background-image: url('../../../assets/images/cards/card-hearts-6.svg')
+        &.seven
+          background-image: url('../../../assets/images/cards/card-hearts-7.svg')
+        &.eight
+          background-image: url('../../../assets/images/cards/card-hearts-8.svg')
+        &.nine
+          background-image: url('../../../assets/images/cards/card-hearts-9.svg')
+        &.ten
+          background-image: url('../../../assets/images/cards/card-hearts-10.svg')
+        &.jack
+          background-image: url('../../../assets/images/cards/card-hearts-j.svg')
+        &.queen
+          background-image: url('../../../assets/images/cards/card-hearts-q.svg')
+        &.king
+          background-image: url('../../../assets/images/cards/card-hearts-k.svg')
+        &.ace
+          background-image: url('../../../assets/images/cards/card-hearts-a.svg')
+
+
+    &.spades
+        &.two
+          background-image: url('../../../assets/images/cards/card-spades-2.svg')
+        &.three
+          background-image: url('../../../assets/images/cards/card-spades-3.svg')
+        &.four
+          background-image: url('../../../assets/images/cards/card-spades-4.svg')
+        &.five
+          background-image: url('../../../assets/images/cards/card-spades-5.svg')
+        &.six
+          background-image: url('../../../assets/images/cards/card-spades-6.svg')
+        &.seven
+          background-image: url('../../../assets/images/cards/card-spades-7.svg')
+        &.eight
+          background-image: url('../../../assets/images/cards/card-spades-8.svg')
+        &.nine
+          background-image: url('../../../assets/images/cards/card-spades-9.svg')
+        &.ten
+          background-image: url('../../../assets/images/cards/card-spades-10.svg')
+        &.jack
+          background-image: url('../../../assets/images/cards/card-spades-j.svg')
+        &.queen
+          background-image: url('../../../assets/images/cards/card-spades-q.svg')
+        &.king
+          background-image: url('../../../assets/images/cards/card-spades-k.svg')
+        &.ace
+          background-image: url('../../../assets/images/cards/card-spades-a.svg')
+
+
     &.joker
-      background-position-x: -1490px
+        background-image: url('../../../assets/images/cards/card-joker-1.svg')
 
 .back
+  border: 0
   .graphic
-    background-image: url('../../../assets/images/back.jpg')
-    background-size: 100% 100%
+    background-image: url('../../../assets/images/cards/card-back.svg')
+    background-size: cover
     background-repeat: no-repeat
