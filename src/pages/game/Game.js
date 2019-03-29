@@ -9,7 +9,7 @@ import SuggestedMove from '../../components/suggested_move/SuggestedMove';
 
 import css from './Game.sass';
 
-const Game = () => {
+const Game = ({store}) => {
   // Just hardcode for now
   const overlap = 30;
   const players = [
@@ -20,15 +20,21 @@ const Game = () => {
   ];
 
   // State
+  let storedGame = store.game || null;
+  let storedWasm = store.wasm || null;
+  let storedNextPlayer = store.nextPlayer || null;
+  let storedLastMove = store.lastMove || null;
+  let storedPlayerCards = store.playerCards || [];
+
   const [ selected, setSelected] = useState([]);
   const [ handLabel, setHandLabel ] = useState('Pass');
-  const [ playerCards, setPlayerCards ] = useState([]);
+  const [ playerCards, setPlayerCards ] = useState(storedPlayerCards);
   const [ winners, setWinners ] = useState([]);
   const [ gameOver, setGameOver ] = useState(false);
-  const [ wasm, setWasm ] = useState(null);
-  const [ game, setGame ] = useState(null);
-  const [ lastMove, setLastMove ] = useState(null);
-  const [ nextPlayer, setNextPlayer ] = useState(null);
+  const [ wasm, setWasm ] = useState(storedWasm);
+  const [ game, setGame ] = useState(storedGame);
+  const [ lastMove, setLastMove ] = useState(storedLastMove);
+  const [ nextPlayer, setNextPlayer ] = useState(storedNextPlayer);
   const [ showTips, setShowTips ] = useState(null);
 
   const [ cardWidth, setCardWidth ] = useState(0);
@@ -43,7 +49,8 @@ const Game = () => {
   // Load WASM library
   useEffect(() => {
     import( /* webpackChunkName: "wasm" */'wasm-pusoy-dos').then(wasm => {
-      setWasm(wasm);
+      store.wasm = wasm;
+      setWasm(store.wasm);
     });
   }, []);
 
@@ -113,7 +120,9 @@ const Game = () => {
 
                 let cards = wasm.get_cpu_move(game);
                 wasm.submit_move(game, nextPlayer, cards);
-                setLastMove(wasm.get_last_move(game));
+
+                store.lastMove = wasm.get_last_move(game);
+                setLastMove(store.lastMove);
                 if (cards.length) {
                   const translateFrom = {
                     'cpu1': 'translate(-50vw, 0)',
@@ -127,7 +136,8 @@ const Game = () => {
                     movesRef.current.style.transform = 'unset';
                   }, 0);
                 }
-                setNextPlayer(wasm.get_next_player(game));
+                store.nextPlayer = wasm.get_next_player(game);
+                setNextPlayer(store.nextPlayer);
                 resolve();
             }, 2000);
         } else {
@@ -150,11 +160,14 @@ const Game = () => {
 
     let game = wasm.create_game(players)
     setGame(game);
+    store.game = game;
     let player = wasm.get_player(game, players[0]);
     let joker = 0;
-    const playerCards = player.map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}`}));
-    setPlayerCards(playerCards);
-    setNextPlayer(wasm.get_next_player(game));
+    store.playerCards = player.map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}`}));
+    setPlayerCards(store.playerCards);
+
+    store.nextPlayer = wasm.get_next_player(game);
+    setNextPlayer(store.nextPlayer);
   }
 
   function updateWinners(){
@@ -194,8 +207,11 @@ const Game = () => {
     const playerCards = getPlayerCards(players[0]).map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}`}));
     setPlayerCards(playerCards);
     setSelected([]);
-    setLastMove(wasm.get_last_move(game));
-    setNextPlayer(wasm.get_next_player(game));
+    store.lastMove = wasm.get_last_move(game);
+    store.nextPlayer = wasm.get_next_player(game);
+
+    setLastMove(store.lastMove);
+    setNextPlayer(store.nextPlayer);
     setShowTips(null);
   }
 
@@ -257,10 +273,10 @@ const Game = () => {
   function getFrontPage(mainSection) {
     return (<div className={css.splashscreen}>
         <h1>soydos.com</h1>
-        <Link to="/about">Rules</Link>
         <div>
             {mainSection}
         </div>
+        <Link to="/about">About Pickering Rules Pusoy Dos</Link>
     </div>);
   }
 

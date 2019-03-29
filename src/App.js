@@ -10,6 +10,7 @@ import About from "./pages/about/About";
 
 import css from './App.sass';
 
+const store = {};
 const App = () => {
   return(
      <Router>
@@ -28,7 +29,11 @@ const App = () => {
           </ul>
         </nav>
 */}
-        <Route path="/" exact component={Game} />
+        <Route
+            path="/"
+            render={(props) => <Game {...props} store={store} />}
+             exact
+        />
         <Route path="/about/" component={About} />
     </Router>
   );

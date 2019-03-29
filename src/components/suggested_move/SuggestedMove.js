@@ -46,7 +46,7 @@ const SuggestedMove = ({
         <div className={css.close} onClick={close}>x</div>
         { explanation }
         <div>
-            <Link to="/about">Rules</Link>
+            <p><Link to="/about">See complete rules.</Link></p>
         </div>
         <div>
             Suggested Move:
