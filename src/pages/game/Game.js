@@ -119,7 +119,9 @@ const Game = ({store}) => {
                 }
 
                 let cards = wasm.get_cpu_move(game);
-                wasm.submit_move(game, nextPlayer, cards);
+                let result = wasm.submit_move(game, nextPlayer, cards);
+
+                console.log(result);
 
                 store.lastMove = wasm.get_last_move(game);
                 setLastMove(store.lastMove);
@@ -129,12 +131,14 @@ const Game = ({store}) => {
                     'cpu2': 'translate(0, -40vh)',
                     'cpu3': 'translate(50vw, 0)'
                   };
-                  movesRef.current.style.transition = 'unset';
-                  movesRef.current.style.transform = translateFrom[nextPlayer];
-                  setTimeout(() => {
-                    movesRef.current.style.transition = 'transform 0.25s';
-                    movesRef.current.style.transform = 'unset';
-                  }, 0);
+                  if(movesRef.current) {
+                    movesRef.current.style.transition = 'unset';
+                    movesRef.current.style.transform = translateFrom[nextPlayer];
+                    setTimeout(() => {
+                      movesRef.current.style.transition = 'transform 0.25s';
+                      movesRef.current.style.transform = 'unset';
+                    }, 0);
+                  }
                 }
                 store.nextPlayer = wasm.get_next_player(game);
                 setNextPlayer(store.nextPlayer);
@@ -158,16 +162,21 @@ const Game = ({store}) => {
     setNextPlayer(null);
     setWinners([]);
 
-    let game = wasm.create_game(players)
+    let game = wasm.create_game(players, 2, 2)
     setGame(game);
     store.game = game;
     let player = wasm.get_player(game, players[0]);
-    let joker = 0;
-    store.playerCards = player.map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}`}));
+    store.playerCards = assignCardIds(player);
     setPlayerCards(store.playerCards);
 
     store.nextPlayer = wasm.get_next_player(game);
     setNextPlayer(store.nextPlayer);
+  }
+
+  function assignCardIds(cards) {
+    let joker = 0;
+    return cards.map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}${card.deck_id}`}));
+
   }
 
   function updateWinners(){
@@ -203,8 +212,8 @@ const Game = ({store}) => {
 
   function onSubmit() {
     let result = wasm.submit_move(game, 'player', selected);
-    let joker = 0;
-    const playerCards = getPlayerCards(players[0]).map(card => ({...card, id: card.type === 'joker' ? `joker${joker++}` : `${card.rank}${card.suit}`}));
+    console.log(result);
+    const playerCards = assignCardIds(getPlayerCards(players[0]));
     setPlayerCards(playerCards);
     setSelected([]);
     store.lastMove = wasm.get_last_move(game);
