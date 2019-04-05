@@ -121,7 +121,9 @@ const Game = ({store}) => {
                 let cards = wasm.get_cpu_move(game);
                 let result = wasm.submit_move(game, nextPlayer, cards);
 
-                console.log(result);
+                if(result !== true) {
+                    console.log(result);
+                }
 
                 store.lastMove = wasm.get_last_move(game);
                 setLastMove(store.lastMove);
@@ -156,13 +158,13 @@ const Game = ({store}) => {
   }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
-  function onDeal() {
+  function onDeal(decks, jokers) {
     setGameOver(false);
     setLastMove(null);
     setNextPlayer(null);
     setWinners([]);
 
-    let game = wasm.create_game(players, 2, 2)
+    let game = wasm.create_game(players, decks, jokers)
     setGame(game);
     store.game = game;
     let player = wasm.get_player(game, players[0]);
@@ -171,6 +173,20 @@ const Game = ({store}) => {
 
     store.nextPlayer = wasm.get_next_player(game);
     setNextPlayer(store.nextPlayer);
+  }
+
+  function onNewGame() {
+    store.game = null;
+    store.nextPlayer = null;
+    store.lastMove = null;
+    store.playerCards = [];
+
+    setGame(store.game);
+    setNextPlayer(store.nextPlayer);
+    setLastMove(store.lastMove);
+    setPlayerCards(store.playerCards);
+
+    setGameOver(false);
   }
 
   function assignCardIds(cards) {
@@ -326,7 +342,7 @@ const Game = ({store}) => {
 
   const newGame = (
     getFrontPage(
-        <NewGame onClick={onDeal} />
+        <NewGame deal={onDeal} />
     )
   );
 
@@ -339,7 +355,7 @@ const Game = ({store}) => {
         </ol>
         <button
           className={css.button_calltoaction}
-          onClick={onDeal}
+          onClick={onNewGame}
         >
           New Game
         </button>
