@@ -158,13 +158,13 @@ const Game = ({store}) => {
   }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
-  function onDeal(decks, jokers) {
+  function onDeal(decks, jokers, ruleset) {
     setGameOver(false);
     setLastMove(null);
     setNextPlayer(null);
     setWinners([]);
 
-    let game = wasm.create_game(players, decks, jokers)
+    let game = wasm.create_game(players, decks, jokers, ruleset)
     setGame(game);
     store.game = game;
     let player = wasm.get_player(game, players[0]);
