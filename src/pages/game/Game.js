@@ -296,7 +296,6 @@ const Game = ({store}) => {
 
   function getFrontPage(mainSection) {
     return (<div className={css.splashscreen}>
-        <h1>soydos.com</h1>
         <div>
             {mainSection}
         </div>
