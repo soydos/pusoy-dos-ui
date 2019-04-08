@@ -14,6 +14,7 @@ const Feedback = () => {
             action="/feedback-success"
             data-netlify="true"
         >
+           <input type="hidden" name="form-name" value="feedback"/> 
             <p>
                 <label>Name:</label><br/>
                 <input type="text" name="name" />
