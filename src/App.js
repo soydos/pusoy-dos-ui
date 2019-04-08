@@ -7,6 +7,7 @@ import {
 
 import Game from "./pages/game/Game";
 import About from "./pages/about/About";
+import Privacy from "./pages/privacy/Privacy";
 
 import css from './App.sass';
 
@@ -36,7 +37,8 @@ const App = () => {
              exact
         />
         <Route path="/about/" component={About} />
-      </Router>
+        <Route path="/privacy/" component={Privacy} />
+
       <footer>
         <span className={css.copyright}>
           &copy; 2019 soydos.com
@@ -48,24 +50,25 @@ const App = () => {
         </span>
 */}
 
-        <span className="contribute">
+        <span className={css.footerLink}>
           <a href="https://github.com/soydos/pusoy-dos-ui">
             Contribute
           </a>
         </span>
-
-{/*
-        <span className="privacy-policy">
-            <a href="#">Privacy Policy</a>
+&nbsp;
+        <span className={css.footerLink}>
+            <Link to="/privacy">Privacy Policy</Link>
         </span>
-*/}
       </div>
+
       <div>
         <small className={css.buildVersion}>
           build: {window.pd_build}
         </small>
       </div>
       </footer>
+
+      </Router>
     </div>
   );
 }
