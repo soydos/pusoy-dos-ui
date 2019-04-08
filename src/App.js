@@ -24,6 +24,9 @@ const App = () => {
             <span className={css.logo}>
                 <img src={logo}/>
             </span>
+            <span className={css.tagline}>
+                The Pu is silent
+            </span>
         </header>
         <Route
             path="/"

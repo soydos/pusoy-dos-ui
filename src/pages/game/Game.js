@@ -324,8 +324,8 @@ const Game = ({store}) => {
                 </button>
               </div>
 
-              <div className={css.help}>
-                <span onClick={onHelp}>help!</span>
+              <div className={css.help} onClick={onHelp}>
+                <span>Help</span>
               </div>
             </div>
         }

@@ -2,37 +2,62 @@
   max-width: 400px
   margin: 20px auto
   background-color: #FFF
-  padding: 10px 40px 40px
-  border-radius: 10px
-  color: #222
+  border-radius: 8px
+  color: #801D40
   h5
-    background-color: green
+    background-color: #FF3B5C
     padding: 12px 24px
-    color: #E2E2E2
+    color: #FFF
+    margin: 0
+    border-radius: 8px 8px 0 0
+    font-size: 20px
+    font-weight: normal
   hr
     border: 0
     border-bottom: 1px solid #DDD
     margin: 25px 0
   a, a:hover, a:visited, a:active
     color: #222
+  .body
+    padding: 10px 22px 30px
   .inlineFlag
     margin-left: 5px
     margin-bottom: -5px
   .toggle
     margin-left: 8px
-    padding: 2px 4px
+    padding: 2px 8px
     cursor: pointer
     border-radius: 25px
+    color: #AFAEAE
+    border: 1px solid #AFAEAE
+    &.pickering
+      .flag
+        background-image: url('./flag-yorkshire.svg')
+        background-position: center
+        background-size: cover
+    &.classic
+      .flag
+        background-image: url('./flag-phillipines.svg')
+        background-size: cover
+    .flag
+      border-radius: 24px
+      width: 22px
+      height: 22px
+      overflow: hidden
+      display: inline-block
+      margin-bottom: -6px
+      margin-left: 8px
   .selectedToggle
-    background-color: green
+    background-color: #7376FF
     color: #E2E2E2
   .button_calltoaction
     margin-left: calc(50% - 32px)
-    background-color: green
+    background-color: #FF3B5C
     border: 0
-    padding: 8px 12px
-    border-radius: 24px
-    color: #E2E2E2
+    padding: 10px 24px
+    border-radius: 18px
+    color: #FFF
+    font-size: 16px
   .fieldValue
     float: right
   .clearfix
