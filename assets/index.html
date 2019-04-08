@@ -4,7 +4,7 @@
     <title>The Pu is Silent</title>
     <link href="https://fonts.googleapis.com/css?family=Cairo" rel="stylesheet"> 
     <meta name="viewport" content="initial-scale=1">
-     <meta name="description" content="Pusoy Dos - Play single player Pickering rules Pusoy Dos in your browser for free!">
+     <meta name="description" content="Play single player Pickering rules or classic Pusoy Dos in your browser for free! Play cards against the computer.">
   </head>
   <body>
     <div style="max-width: 800px; margin: 0 auto">
@@ -12,10 +12,11 @@
             <h1>soydos.com</h1>
             <h1>Loading...</h1>
         </div>
-        <div>
-            <small>build: <%= commit_ref %></small>
-        </div>
     </div>
+    <script>
+        var pd_build = "<%= commit_ref %>";
+    </script>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-<%= ga %>"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

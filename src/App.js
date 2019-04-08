@@ -13,7 +13,8 @@ import css from './App.sass';
 const store = {};
 const App = () => {
   return(
-     <Router>
+    <div>
+      <Router>
 {/*      <div>
         <nav>
           <ul>
@@ -35,7 +36,37 @@ const App = () => {
              exact
         />
         <Route path="/about/" component={About} />
-    </Router>
+      </Router>
+      <footer>
+        <span className={css.copyright}>
+          &copy; 2019 soydos.com
+        </span>
+        <div className={css.links}>
+{/*
+        <span className="feedback">
+          <a href="#">Feedback</a>
+        </span>
+*/}
+
+        <span className="contribute">
+          <a href="https://github.com/soydos/pusoy-dos-ui">
+            Contribute
+          </a>
+        </span>
+
+{/*
+        <span className="privacy-policy">
+            <a href="#">Privacy Policy</a>
+        </span>
+*/}
+      </div>
+      <div>
+        <small className={css.buildVersion}>
+          build: {window.pd_build}
+        </small>
+      </div>
+      </footer>
+    </div>
   );
 }
 

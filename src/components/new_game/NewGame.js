@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { Link } from "react-router-dom";
+
 import css from './NewGame.sass';
 import yorks_flag from './yorkshire_flag.svg';
 import phil_flag from './Flag_of_the_Philippines.svg';
@@ -99,6 +101,16 @@ const NewGame = ({deal}) => {
                 /></span>
             </span>
         </p>
+        <div>
+          <span className={css.fieldValue}>
+            <Link 
+              to="/about"
+            >
+              Pusoy Dos rules
+            </Link>
+          </span>
+        </div>
+        <div className={css.clearfix}></div>
         <hr/>
         <button
             className={css.button_calltoaction}

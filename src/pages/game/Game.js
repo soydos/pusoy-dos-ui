@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { Link } from "react-router-dom";
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 import Card from '../../components/card/Card';
@@ -301,7 +300,6 @@ const Game = ({store}) => {
         <div>
             {mainSection}
         </div>
-        <Link to="/about">About Pickering Rules Pusoy Dos</Link>
     </div>);
   }
 
