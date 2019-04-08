@@ -9,6 +9,7 @@ import Game from "./pages/game/Game";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
+import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 
 import logo from "../assets/images/logo-landscape.svg";
 
@@ -32,6 +33,10 @@ const App = () => {
         <Route path="/about/" component={About} />
         <Route path="/privacy/" component={Privacy} />
         <Route path="/feedback/" component={Feedback} />
+        <Route
+            path="/feedback-success/"
+            component={FeedbackSuccess}
+        />
 
       <footer>
         <span className={css.copyright}>

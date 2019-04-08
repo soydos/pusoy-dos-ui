@@ -8,7 +8,12 @@ const Feedback = () => {
             If you have a feature request,
            a bug report, or just want to say hi, 
             please get in touch!</p>
-        <form name="feedback" method="POST" data-netlify="true">
+        <form 
+            name="feedback"
+            method="POST"
+            action="/feedback-success"
+            data-netlify="true"
+        >
             <p>
                 <label>Name:</label><br/>
                 <input type="text" name="name" />
