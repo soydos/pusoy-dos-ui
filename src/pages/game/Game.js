@@ -209,9 +209,20 @@ const Game = ({store}) => {
   }
 
   function displayWinners(){
-    return winners.map((winner, index) => {
+    const leaderboard = winners.slice();
+    
+    const losers = players
+        .filter(id => !winners.includes(id))
+        .map(id => {
+            const count = getPlayerCards(id).length;
+            const cards = count > 1 ? 'cards' : 'card';
+            return `${id} (${count} ${cards} left)`;
+        });
+
+    return leaderboard.concat(losers).map((winner, index) => {
         return (<li key={`winner-${index}`}>{winner}</li>);
     });
+
   }
 
   function onHelp() {
@@ -352,7 +363,7 @@ const Game = ({store}) => {
     )
   );
 
-  const gameSummary = (
+  const gameSummary = gameOver && (
     getFrontPage(
       <div className={css.gameSummary}>
         <h3>Game Rankings</h3>
