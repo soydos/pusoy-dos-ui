@@ -163,6 +163,15 @@ const Game = ({store}) => {
     setNextPlayer(null);
     setWinners([]);
 
+    // google analytics hack
+    window.ga && window.ga(
+      'send',
+      'event',
+      'Games',
+      'start',
+      ruleset
+    );
+
     let game = wasm.create_game(players, decks, jokers, ruleset)
     setGame(game);
     store.game = game;
