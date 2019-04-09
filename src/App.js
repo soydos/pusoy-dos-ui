@@ -62,7 +62,7 @@ const App = () => {
         </span>
       </div>
 
-      <div>
+      <div className={css.clearfix}>
         <small className={css.buildVersion}>
           build: {window.pd_build}
         </small>

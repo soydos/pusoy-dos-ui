@@ -37,44 +37,36 @@ const NewGame = ({deal}) => {
   }
 
   function onClick() {
-    deal(decks, jokers, ruleset);
+    let j = ruleset == 'pickering' ? jokers : 0;
+    deal(decks, j, ruleset);
   }
 
   return (
+    <div>
+    <p className={css.intro}>
+        Pusoy Dos is an addictive card game for 2 or more players
+        where the aim is to be the first player to get rid of all 
+        of your cards.
+    </p>
+    <p className={css.intro}>
+        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against the computer.<br/>
+          <span className={css.howtoplay}>
+            <Link 
+              to="/about"
+            >
+              Learn how to play.
+            </Link>
+          </span>
+
+    </p>
     <div className={css.newGame}>
         <h5>New Game</h5>
-        <div className={css.body}>
+        <div className={`${css.body} ${css[ruleset]}`}>
             <p className={css.field}>
                 Players:
                 <span className={css.fieldValue}>4</span>
             </p>
-            <p className={css.field}>
-                Decks:
-                <span className={css.fieldValue}>
-                    <select value={decks} onChange={updateDecks}>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                </span>
-            </p>
-            <p className={css.field}>
-                Jokers:
-                <span className={css.fieldValue}>
-                    <select value={jokers} onChange={updateJokers}>
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
 
-                    </select>
-                </span>
-            </p>
             <p className={css.field}>
                 Rules: 
                 <span className={css.fieldValue}
@@ -94,15 +86,34 @@ const NewGame = ({deal}) => {
                     </span>
                 </span>
             </p>
-            <div>
-              <span className={css.fieldValue}>
-                <Link 
-                  to="/about"
-                >
-                  Pusoy Dos rules
-                </Link>
-              </span>
-            </div>
+            <p className={css.field}>
+                Decks:
+                <span className={css.fieldValue}>
+                    <select value={decks} onChange={updateDecks}>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </span>
+            </p>
+            <p className={css.jokers}>
+                Jokers:
+                <span className={css.fieldValue}>
+                    <select value={jokers} onChange={updateJokers}>
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+
+                    </select>
+                </span>
+            </p>
+
             <div className={css.clearfix}></div>
             <hr/>
             <button
@@ -112,6 +123,10 @@ const NewGame = ({deal}) => {
             Deal
             </button>
         </div>
+
+
+    </div>
+
     </div>
   )
 };
