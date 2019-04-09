@@ -212,15 +212,28 @@ const Game = ({store}) => {
     const leaderboard = winners.slice();
     
     const losers = players
-        .filter(id => !winners.includes(id))
-        .map(id => {
-            const count = getPlayerCards(id).length;
-            const cards = count > 1 ? 'cards' : 'card';
-            return `${id} (${count} ${cards} left)`;
-        });
+        .filter(id => !winners.includes(id));
 
-    return leaderboard.concat(losers).map((winner, index) => {
-        return (<li key={`winner-${index}`}>{winner}</li>);
+    return leaderboard.concat(losers).map((id, index) => {
+       const cards = getPlayerCards(id).map((card, index) => {
+            return (<Card
+                card={card}
+                style={
+                  {
+                    position:'relative',
+                    left:(index * -25 + 'px'),
+                    height: '80px',
+                    width: '55px',
+                    display: 'inline-block'
+                  }
+                }
+                key={index}
+              />);
+        });
+       return (<li key={`winner-${index}`}>
+            {id}
+            <div>{ cards }</div>
+        </li>);
     });
 
   }
