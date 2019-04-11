@@ -28,6 +28,7 @@ const Game = ({store}) => {
   const [ selected, setSelected] = useState([]);
   const [ handLabel, setHandLabel ] = useState('Pass');
   const [ playerCards, setPlayerCards ] = useState(storedPlayerCards);
+  const [ validMove, setValidMove ] = useState(null);
   const [ winners, setWinners ] = useState([]);
   const [ gameOver, setGameOver ] = useState(false);
   const [ wasm, setWasm ] = useState(storedWasm);
@@ -60,7 +61,17 @@ const Game = ({store}) => {
       {type: "Invalid Hand"};
 
     setHandLabel(getHandDescription(move));
+    setValidMove( /* red|green|null */ getIsValidMove(selected))
   }, [selected, wasm])
+
+
+  function getIsValidMove(selected) {
+    if(selected.length == 0){
+        return null;
+    }
+
+    return wasm.check_move(game, selected) ? 'green' : 'red';
+  }
 
   function getHandDescription(move) {
     const type = move.type;
@@ -351,11 +362,17 @@ const Game = ({store}) => {
         { displayLastMove() }
         {nextPlayer === players[0] &&
             <div className={css.action}>
+            {validMove !== 'red' ?
               <div className={css.action}>
                 <button onClick={onSubmit}>
                   play {handLabel}
                 </button>
+              </div>  :
+              <div className={css.invalid}>
+                Unable to play {handLabel} -&nbsp;
+                    <a href="#" onClick={onHelp}>help</a>
               </div>
+            }
 
               <div className={css.help} onClick={onHelp}>
                 <span>Help</span>
