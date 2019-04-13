@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 import css from './NewGame.sass';
 
+import Auth from '../../auth/Auth.js';
+
 const NewGame = ({deal}) => {
 
   const DEFAULT_JOKERS = 2;
@@ -41,6 +43,11 @@ const NewGame = ({deal}) => {
     deal(decks, j, ruleset);
   }
 
+  function login() {
+    const auth = new Auth();
+    auth.login();
+  }
+
   return (
     <div>
     <p className={css.intro}>
@@ -59,6 +66,9 @@ const NewGame = ({deal}) => {
           </span>
 
     </p>
+    <div>
+        <button onClick={login}>Login to play with your friends</button>
+    </div>
     <div className={css.newGame}>
         <h5>New Game</h5>
         <div className={`${css.body} ${css[ruleset]}`}>

@@ -5,6 +5,10 @@ import {
     Link 
 } from "react-router-dom";
 
+
+import { Provider } from 'react-redux'
+import { createStore } from "redux";
+
 import Game from "./pages/game/Game";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
@@ -15,10 +19,10 @@ import logo from "../assets/images/logo-landscape.svg";
 
 import css from './App.sass';
 
-const store = {};
+const store = createStore(()=>{});
 const App = () => {
   return(
-    <div>
+    <Provider store={store}>
       <Router>
         <header>
             <span className={css.logo}>
@@ -70,7 +74,7 @@ const App = () => {
       </footer>
 
       </Router>
-    </div>
+    </Provider>
   );
 }
 
