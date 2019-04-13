@@ -39,6 +39,8 @@ const Game = ({store}) => {
 
   const [ cardWidth, setCardWidth ] = useState(0);
 
+  const [ suitOrder, setSuitOrder ] = useState([]);
+
   const movesRef = useRef(null);
 
    useEffect(() => {
@@ -154,6 +156,8 @@ const Game = ({store}) => {
                 }
                 store.nextPlayer = wasm.get_next_player(game);
                 setNextPlayer(store.nextPlayer);
+                updateSuitOrder();
+                
                 resolve();
             }, 2000);
         } else {
@@ -183,6 +187,8 @@ const Game = ({store}) => {
       ruleset
     );
 
+    store.ruleset = ruleset;
+
     let game = wasm.create_game(players, decks, jokers, ruleset)
     setGame(game);
     store.game = game;
@@ -192,6 +198,12 @@ const Game = ({store}) => {
 
     store.nextPlayer = wasm.get_next_player(game);
     setNextPlayer(store.nextPlayer);
+    updateSuitOrder();
+  }
+
+  function updateSuitOrder() {
+    const suits = wasm.get_suit_order(store.game);
+    setSuitOrder(suits);
   }
 
   function onNewGame() {
@@ -280,6 +292,7 @@ const Game = ({store}) => {
 
     setLastMove(store.lastMove);
     setNextPlayer(store.nextPlayer);
+    updateSuitOrder(); 
     setShowTips(null);
   }
 
@@ -338,6 +351,27 @@ const Game = ({store}) => {
 
   }
 
+  function getSuitOrder() {
+    const suitMap = {
+      'spades': '&spades;',
+      'diamonds': '&diams;',
+      'hearts': '&hearts;',
+      'clubs': '&clubs;'
+    };
+    const suits = suitOrder.reverse().map((suit, index) => {
+      return (<li className={`${css.suit} ${css[suit]}`} key={suit}
+        dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
+    });
+
+    if(store.ruleset === 'pickering' && suitOrder.length > 0) {
+        return (<ul className={css.suitList}>
+            { suits }
+        </ul>);
+    }
+
+    return null;
+  }
+
   function getFrontPage(mainSection) {
     return (<div className={css.splashscreen}>
         <div>
@@ -360,6 +394,9 @@ const Game = ({store}) => {
           <Opponent cards={getHiddenCards(players[3])} vertical={true} />
         </div>
         { displayLastMove() }
+        <div>
+          { getSuitOrder() }
+        </div>
         {nextPlayer === players[0] &&
             <div className={css.action}>
             {validMove !== 'red' ?
