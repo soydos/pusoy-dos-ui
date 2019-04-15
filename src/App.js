@@ -19,7 +19,10 @@ import logo from "../assets/images/logo-landscape.svg";
 
 import css from './App.sass';
 
-const store = createStore(()=>{});
+const store = createStore(
+    ()=>{},
+    window.__REDUX_DEVTOOLS_EXTENSION__
+    && window.__REDUX_DEVTOOLS_EXTENSION__());
 const App = () => {
   return(
     <Provider store={store}>

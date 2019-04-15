@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux';
+import { login } from '../../actions/auth.js';
 
 import { Link } from "react-router-dom";
 
@@ -6,7 +9,7 @@ import css from './NewGame.sass';
 
 import Auth from '../../auth/Auth.js';
 
-const NewGame = ({deal}) => {
+const NewGame = ({deal, onLogin}) => {
 
   const DEFAULT_JOKERS = 2;
   const DEFAULT_DECKS = 1;
@@ -43,10 +46,12 @@ const NewGame = ({deal}) => {
     deal(decks, j, ruleset);
   }
 
+/*
   function login() {
     const auth = new Auth();
     auth.login();
   }
+*/
 
   return (
     <div>
@@ -66,9 +71,6 @@ const NewGame = ({deal}) => {
           </span>
 
     </p>
-    <div>
-        <button onClick={login}>Login to play with your friends</button>
-    </div>
     <div className={css.newGame}>
         <h5>New Game</h5>
         <div className={`${css.body} ${css[ruleset]}`}>
@@ -136,9 +138,25 @@ const NewGame = ({deal}) => {
 
 
     </div>
+    <div className={css.loginCta}>
+        <button onClick={onLogin}>
+            Login to play with your friends
+        </button>
+    </div>
 
     </div>
   )
 };
 
-export default NewGame;
+NewGame.propTypes = {
+    deal: PropTypes.func.isRequired
+};
+
+const mapDispatchToProps = dispatch => ({
+  onLogin: () => dispatch(login)
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(NewGame);
