@@ -1,0 +1,39 @@
+import { 
+  LOGIN_ACTION,
+  HANDLE_LOGIN,
+  LOGGED_IN 
+} from '../actions/auth.js';
+import { filter, tap, map } from 'rxjs/operators';
+import history from '../history';
+
+const emptyAction = { type: 'EMPTY' };
+
+export default (auth) => {
+    const loginEpic = action$ => action$.pipe(
+      filter(action => action.type === LOGIN_ACTION),
+      tap(ev => {
+        auth.login();
+      }),
+      map(ev => (emptyAction))
+    );
+
+    const handleLoginEpic = action$ => action$.pipe(
+      filter(action => action.type === HANDLE_LOGIN),
+      tap(ev => {
+        auth.handleAuthentication();
+      }),
+      map(ev => (emptyAction))
+    );
+
+    const loggedInEpic = action$ => action$.pipe(
+      filter(action => action.type === LOGGED_IN),
+      tap(ev => history.push('/')),
+      map(ev => (emptyAction))
+    );
+
+    return {
+      loginEpic,
+      handleLoginEpic,
+      loggedInEpic
+    };
+};

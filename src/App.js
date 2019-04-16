@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    BrowserRouter as Router,
+    Router,
     Route,
     Link 
 } from "react-router-dom";
@@ -9,47 +9,38 @@ import {
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
-import { filter, map } from 'rxjs/operators';
-
-import { LOGIN_ACTION } from './actions/auth.js';
-
 import Game from "./pages/game/Game";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
-
+import Login from "./pages/login/Login";
+import rootEpic from './epics/rootEpic';
+import history from './history';
 import logo from "../assets/images/logo-landscape.svg";
-
-import Auth from './auth/Auth.js';
 import css from './App.sass';
+import Auth from './auth/Auth';
 
-
-const loginEpic = action$ => action$.pipe(
-  filter(action => action.type === LOGIN_ACTION),
-  map(ev => { 
-    const auth = new Auth();
-    auth.login();
-    return null;
-  })
-);
+import reducers from './reducers/rootReducer';
 
 const epicMiddleware = createEpicMiddleware();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+
 const store = createStore(
-    ()=>{},
+    reducers,
     composeEnhancers(
         applyMiddleware(epicMiddleware)
     )
 );
 
-epicMiddleware.run(loginEpic);
+const auth = new Auth(store.dispatch.bind(store));
+epicMiddleware.run(rootEpic(auth));
 
 const App = () => {
   return(
     <Provider store={store}>
-      <Router>
+      <Router history={history}>
         <header>
             <span className={css.logo}>
                 <img src={logo}/>
@@ -70,6 +61,8 @@ const App = () => {
             path="/feedback-success/"
             component={FeedbackSuccess}
         />
+
+        <Route path="/login/" component={Login} />
 
       <footer>
         <span className={css.copyright}>

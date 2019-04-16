@@ -7,8 +7,6 @@ import { Link } from "react-router-dom";
 
 import css from './NewGame.sass';
 
-import Auth from '../../auth/Auth.js';
-
 const NewGame = ({deal, onLogin}) => {
 
   const DEFAULT_JOKERS = 2;
@@ -45,13 +43,6 @@ const NewGame = ({deal, onLogin}) => {
     let j = ruleset == 'pickering' ? jokers : 0;
     deal(decks, j, ruleset);
   }
-
-/*
-  function login() {
-    const auth = new Auth();
-    auth.login();
-  }
-*/
 
   return (
     <div>
