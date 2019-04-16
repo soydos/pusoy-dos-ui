@@ -7,7 +7,11 @@ import {
 
 
 import { Provider } from 'react-redux'
-import { createStore } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import { createEpicMiddleware } from 'redux-observable';
+import { filter, map } from 'rxjs/operators';
+
+import { LOGIN_ACTION } from './actions/auth.js';
 
 import Game from "./pages/game/Game";
 import About from "./pages/about/About";
@@ -17,12 +21,31 @@ import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 
 import logo from "../assets/images/logo-landscape.svg";
 
+import Auth from './auth/Auth.js';
 import css from './App.sass';
+
+
+const loginEpic = action$ => action$.pipe(
+  filter(action => action.type === LOGIN_ACTION),
+  map(ev => { 
+    const auth = new Auth();
+    auth.login();
+    return null;
+  })
+);
+
+const epicMiddleware = createEpicMiddleware();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
     ()=>{},
-    window.__REDUX_DEVTOOLS_EXTENSION__
-    && window.__REDUX_DEVTOOLS_EXTENSION__());
+    composeEnhancers(
+        applyMiddleware(epicMiddleware)
+    )
+);
+
+epicMiddleware.run(loginEpic);
+
 const App = () => {
   return(
     <Provider store={store}>
