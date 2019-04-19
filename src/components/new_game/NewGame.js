@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 import css from './NewGame.sass';
 
-const NewGame = ({deal, onLogin}) => {
+const NewGame = ({deal, onLogin, loggedIn}) => {
 
   const DEFAULT_JOKERS = 2;
   const DEFAULT_DECKS = 1;
@@ -129,25 +129,31 @@ const NewGame = ({deal, onLogin}) => {
 
 
     </div>
-    <div className={css.loginCta}>
+    { loggedIn ? null : 
+      (<div className={css.loginCta}>
         <button onClick={onLogin}>
             Login to play with your friends
         </button>
-    </div>
+      </div>) }
 
     </div>
   )
 };
 
 NewGame.propTypes = {
-    deal: PropTypes.func.isRequired
+    deal: PropTypes.func.isRequired,
+    loggedIn: PropTypes.bool.isRequired
 };
+
+const mapStateToProps = state => ({
+    loggedIn: state.auth
+});
 
 const mapDispatchToProps = dispatch => ({
   onLogin: () => dispatch(login)
 });
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(NewGame);

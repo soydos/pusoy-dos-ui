@@ -21,6 +21,8 @@ import logo from "../assets/images/logo-landscape.svg";
 import css from './App.sass';
 import Auth from './auth/Auth';
 
+import { LOGGED_IN } from './actions/auth';
+
 import reducers from './reducers/rootReducer';
 
 const epicMiddleware = createEpicMiddleware();
@@ -36,6 +38,10 @@ const store = createStore(
 
 const auth = new Auth(store.dispatch.bind(store));
 epicMiddleware.run(rootEpic(auth));
+
+if(auth.isAuthenticated()) {
+  store.dispatch({ type: LOGGED_IN });
+}
 
 const App = () => {
   return(
