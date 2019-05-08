@@ -9,7 +9,7 @@ import {
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
-import Game from "./pages/game/Game";
+import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
@@ -43,6 +43,8 @@ if(auth.isAuthenticated()) {
   store.dispatch({ type: LOGGED_IN });
 }
 
+const inGameCache = {};
+
 const App = () => {
   return(
     <Provider store={store}>
@@ -57,7 +59,8 @@ const App = () => {
         </header>
         <Route
             path="/"
-            render={(props) => <Game {...props} store={store} />}
+            render={(props) => <FrontPage {...props} 
+                inGameCache={inGameCache} />}
              exact
         />
         <Route path="/about/" component={About} />
