@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import Game from "../game/Game";
 
-const Multiplayer = () => {
+const Multiplayer = ({inGameCache}) => {
 
-    return (<span>multiplayer</span>)
+    return (
+      <>
+        <Game store={inGameCache} />
+        <p>We've not actually implemented multiplayer yet...
+          sorry!</p>
+      </>
+    )
 };
 
 export default Multiplayer;

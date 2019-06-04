@@ -1,7 +1,8 @@
 import { 
   LOGIN_ACTION,
   HANDLE_LOGIN,
-  LOGGED_IN 
+  LOGGED_IN,
+  LOGOUT_ACTION
 } from '../actions/auth.js';
 import { filter, tap, map } from 'rxjs/operators';
 import history from '../history';
@@ -31,9 +32,18 @@ export default (auth) => {
       map(ev => (emptyAction))
     );
 
+    const logoutEpic = action$ => action$.pipe(
+      filter(action => action.type === LOGOUT_ACTION),
+      tap(ev => {
+        auth.logout();
+      }),
+      map(ev => (emptyAction))
+    );
+
     return {
       loginEpic,
       handleLoginEpic,
-      loggedInEpic
+      loggedInEpic,
+      logoutEpic,
     };
 };

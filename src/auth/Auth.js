@@ -7,7 +7,7 @@ export default class Auth {
       this.auth0 = new auth0.WebAuth({
         domain: 'soydos.eu.auth0.com',
         clientID: 'TMBpQzS83vI11fEz3n3VV1z4Wxg4fjmq',
-        redirectUri: 'https://soydos.test/login',
+        redirectUri: `${window.location.origin}/login`,
         responseType: 'token id_token',
         scope: 'openid'
       });

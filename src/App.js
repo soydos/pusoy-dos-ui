@@ -9,6 +9,7 @@ import {
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
+import Logout from "./components/logout/Logout";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
@@ -53,6 +54,7 @@ const App = () => {
             <span className={css.logo}>
                 <img src={logo}/>
             </span>
+            <Logout />
             <span className={css.tagline}>
                 The Pu is silent
             </span>

@@ -7,13 +7,15 @@ export default (auth) => {
   const { 
     loginEpic,
     handleLoginEpic,
-    loggedInEpic 
+    loggedInEpic,
+    logoutEpic,
   } = loginEpics(auth);
 
   return combineEpics(
     loginEpic,
     handleLoginEpic,
-    loggedInEpic
+    loggedInEpic,
+    logoutEpic,
   );
 };
 

@@ -8,7 +8,7 @@ import Multiplayer from "../multiplayer/Multiplayer";
 const FrontPage = ({ inGameCache, loggedIn }) => {
 
     return loggedIn ? 
-        <Multiplayer /> :
+        <Multiplayer inGameCache={inGameCache}/> :
         <Game store={inGameCache} />;
 };
 
