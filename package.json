@@ -30,7 +30,6 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "fix": "0.0.6",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-router-dom": "^5.0.0",
