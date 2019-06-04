@@ -12,10 +12,12 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
   const DEFAULT_JOKERS = 2;
   const DEFAULT_DECKS = 1;
   const DEFAULT_RULESET = 'pickering';
+  const DEFAULT_OPPONENTS = 'human';
 
   const [ decks, setDecks ] = useState(DEFAULT_DECKS);
   const [ jokers, setJokers] = useState(DEFAULT_JOKERS);
   const [ ruleset, setRuleset] = useState(DEFAULT_RULESET);
+  const [ opponents, setOpponents ] = useState(DEFAULT_OPPONENTS);
 
   function updateJokers(ev) {
     setJokers(ev.target.value);
@@ -25,14 +27,10 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
     setDecks(ev.target.value);
   }
 
-  function updateRuleset(rulename) {
-    setRuleset(rulename);
-  }
+  function getToggleClassName(item, selected) {
+    let className = `${css.toggle} ${css[item]}`;
 
-  function getToggleClassName(rules) {
-    let className = `${css.toggle} ${css[rules]}`;
-
-    if(rules === ruleset) {
+    if(item === selected) {
         className += ' ' + css.selectedToggle;
     }
 
@@ -42,6 +40,14 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
   function onClick() {
     let j = ruleset == 'pickering' ? jokers : 0;
     deal(decks, j, ruleset);
+  }
+
+  function getCallToAction() {
+    if (loggedIn && opponents === 'human'){
+       return 'Create New Game'; 
+    }
+
+    return 'Deal';
   }
 
   return (
@@ -70,24 +76,53 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
         <h5>New Game</h5>
         <div className={`${css.body} ${css[ruleset]}`}>
             <p className={css.field}>
-                Players:
-                <span className={css.fieldValue}>4</span>
+                Opponents:
+
+                { loggedIn ? <>
+                    <span className={css.fieldValue}
+                        onClick={() => setOpponents('CPU')}
+                    >
+                        <span className={
+                          getToggleClassName('CPU', opponents)
+                        }>
+                            CPU
+                            <span className={css.flag}></span>
+                        </span>
+                    </span>
+                    <span className={css.fieldValue}
+                        onClick={() => setOpponents('human')}
+                >
+                        <span className={
+                          getToggleClassName('human', opponents)
+                        }>
+                            Human
+                            <span className={css.flag}></span>
+                        </span>
+                    </span>
+
+                  </> : 
+                  <span className={css.fieldValue}>4</span>
+                }
             </p>
 
             <p className={css.field}>
                 Rules: 
                 <span className={css.fieldValue}
-                    onClick={() => updateRuleset('classic')}
+                    onClick={() => setRuleset('classic')}
                 >
-                    <span className={getToggleClassName('classic')}>
+                    <span className={
+                      getToggleClassName('classic', ruleset)
+                    }>
                     Classic
                     <span className={css.flag}></span>
                     </span>
                 </span>
                 <span className={css.fieldValue}
-                    onClick={() => updateRuleset('pickering')}
+                    onClick={() => setRuleset('pickering')}
                 >
-                    <span className={getToggleClassName('pickering')}>
+                    <span className={
+                      getToggleClassName('pickering', ruleset)
+                    }>
                     Pickering
                         <span className={css.flag}></span>
                     </span>
@@ -127,7 +162,7 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
                 className={css.button_calltoaction}
                 onClick={onClick}
             >
-            Deal
+            { getCallToAction() }
             </button>
         </div>
 
