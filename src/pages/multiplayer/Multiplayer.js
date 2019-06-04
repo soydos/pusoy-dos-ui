@@ -5,9 +5,10 @@ const Multiplayer = ({inGameCache}) => {
 
     return (
       <>
-        <Game store={inGameCache} />
         <p>We've not actually implemented multiplayer yet...
           sorry!</p>
+
+        <Game store={inGameCache} />
       </>
     )
 };
