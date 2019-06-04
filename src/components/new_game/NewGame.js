@@ -46,13 +46,17 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
 
   return (
     <div>
+    { loggedIn ? null :
     <p className={css.intro}>
         Pusoy Dos is an addictive card game for 2 or more players
         where the aim is to be the first player to get rid of all 
         of your cards.
-    </p>
+    </p> }
     <p className={css.intro}>
-        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against the computer.<br/>
+        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against 
+        { loggedIn ? <span> your friends or </span> : null }
+        the computer.
+        <br/>
           <span className={css.howtoplay}>
             <Link 
               to="/about"
