@@ -24,15 +24,21 @@ const About = () => {
 
         <p>
             The round begins with a player laying a hand. A hand can be any of the following:
-            <ul>
-                <li>Single - One card</li>
-                <li>Pair - Two cards of the same rank. E.g. Two Clubs, Two Diamonds.</li>
-                <li>Prial - 
-                    Three cards of the same rank. 
-                    E.g. Six Spades, Six Diamonds, Six Hearts</li>
-                <li>Five card trick - 5 cards that combine to become a poker hand</li>
-            </ul>
         </p>
+        <ul>
+            <li>Single - One card</li>
+            <li>Pair -
+              Two cards of the same rank.
+              E.g. Two Clubs, Two Diamonds.
+            </li>
+            <li>Prial - 
+                Three cards of the same rank. 
+                E.g. Six Spades, Six Diamonds, Six Hearts
+            </li>
+            <li>Five card trick -
+                5 cards that combine to become a poker hand
+            </li>
+        </ul>
 
         <p>
             The next player continues by playing the same class
