@@ -6,7 +6,7 @@ import css from "./Multiplayer.sass";
 const MULTIPLAYER_GAME = 'multiplayer';
 const SINGLEPLAYER_GAME = 'computer';
 
-const Multiplayer = ({inGameCache}) => {
+const Multiplayer = () => {
 
     const [ gameType, setGameType ] = useState(null)
 

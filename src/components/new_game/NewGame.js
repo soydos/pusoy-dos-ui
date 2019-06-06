@@ -18,11 +18,11 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
   const [ ruleset, setRuleset] = useState(DEFAULT_RULESET);
 
   function updateJokers(ev) {
-    setJokers(ev.target.value);
+    setJokers(parseInt(ev.target.value, 10));
   }
 
   function updateDecks(ev) {
-    setDecks(ev.target.value);
+    setDecks(parseInt(ev.target.value, 10));
   }
 
   function getToggleClassName(item, selected) {

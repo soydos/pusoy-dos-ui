@@ -2,25 +2,33 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Game from "../game/Game";
+import NewGame from "../../components/new_game/NewGame";
 import Multiplayer from "../multiplayer/Multiplayer";
+import { beginGame } from "../../actions/game";
 
-const FrontPage = ({ inGameCache, loggedIn }) => {
+const FrontPage = ({ loggedIn, onNewGame }) => {
 
     return loggedIn ? 
-        <Multiplayer inGameCache={inGameCache}/> :
-        <Game store={inGameCache} />;
+        <Multiplayer /> :
+        <NewGame deal={onNewGame} />;
 };
 
 FrontPage.propTypes = {
     loggedIn: PropTypes.bool.isRequired,
-    inGameCache: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     loggedIn: state.auth
 });
 
+const mapDispatchToProps = dispatch => ({
+  onNewGame: (decks, jokers, ruleset) => dispatch(beginGame(
+    decks, jokers, ruleset
+  ))
+});
+
+
 export default connect(
-    mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps,
 )(FrontPage);

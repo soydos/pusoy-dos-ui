@@ -67,8 +67,7 @@ const App = () => {
         </header>
         <Route
             path="/"
-            render={(props) => <FrontPage {...props} 
-                inGameCache={inGameCache} />}
+            component={FrontPage}
              exact
         />
         <Route path="/game/" component={Game} />

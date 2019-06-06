@@ -1,6 +1,7 @@
 import { combineEpics } from 'redux-observable';
 
-import loginEpics from './loginEpic.js';
+import loginEpics from './loginEpic';
+import { beginGameEpic } from './historyEpic';
 
 export default (auth) => {
 
@@ -16,6 +17,7 @@ export default (auth) => {
     handleLoginEpic,
     loggedInEpic,
     logoutEpic,
+    beginGameEpic
   );
 };
 

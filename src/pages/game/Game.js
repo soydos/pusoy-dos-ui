@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 import Card from '../../components/card/Card';
-import NewGame from '../../components/new_game/NewGame';
 import SuggestedMove from '../../components/suggested_move/SuggestedMove';
 
 import css from './Game.sass';
 
-const Game = ({store = {}}) => {
+const Game = ({ decks, jokers, ruleset }) => {
   // Just hardcode for now
   const overlap = 30;
   const players = [
@@ -18,30 +19,22 @@ const Game = ({store = {}}) => {
     'cpu3',
   ];
 
-  // State
-  let storedGame = store.game || null;
-  let storedWasm = store.wasm || null;
-  let storedNextPlayer = store.nextPlayer || null;
-  let storedLastMove = store.lastMove || null;
-  let storedPlayerCards = store.playerCards || [];
 
+  // State
+  const [ playerCards, setPlayerCards ] = useState([]);
+  const [ wasm, setWasm ] = useState(null);
+  const [ game, setGame ] = useState(null);
+  const [ lastMove, setLastMove ] = useState(null);
+  const [ nextPlayer, setNextPlayer ] = useState([]);
+
+  const [ winners, setWinners ] = useState([]);
+  const [ validMove, setValidMove ] = useState(null);
+  const [ gameOver, setGameOver ] = useState(false);
   const [ selected, setSelected] = useState([]);
   const [ handLabel, setHandLabel ] = useState('Pass');
-  const [ playerCards, setPlayerCards ] = useState(storedPlayerCards);
-  const [ validMove, setValidMove ] = useState(null);
-  const [ winners, setWinners ] = useState([]);
-  const [ gameOver, setGameOver ] = useState(false);
-  const [ wasm, setWasm ] = useState(storedWasm);
-  const [ game, setGame ] = useState(storedGame);
-  const [ lastMove, setLastMove ] = useState(storedLastMove);
-  const [ nextPlayer, setNextPlayer ] = useState(storedNextPlayer);
   const [ showTips, setShowTips ] = useState(null);
-
   const [ cardWidth, setCardWidth ] = useState(0);
-
   const [ suitOrder, setSuitOrder ] = useState([]);
-
-  const movesRef = useRef(null);
 
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
@@ -51,8 +44,7 @@ const Game = ({store = {}}) => {
   // Load WASM library
   useEffect(() => {
     import( /* webpackChunkName: "wasm" */'wasm-pusoy-dos').then(wasm => {
-      store.wasm = wasm;
-      setWasm(store.wasm);
+      setWasm(wasm);
     });
   }, []);
 
@@ -137,25 +129,8 @@ const Game = ({store = {}}) => {
                     console.log(result);
                 }
 
-                store.lastMove = wasm.get_last_move(game);
-                setLastMove(store.lastMove);
-                if (cards.length) {
-                  const translateFrom = {
-                    'cpu1': 'translate(-50vw, 0)',
-                    'cpu2': 'translate(0, -40vh)',
-                    'cpu3': 'translate(50vw, 0)'
-                  };
-                  if(movesRef.current) {
-                    movesRef.current.style.transition = 'unset';
-                    movesRef.current.style.transform = translateFrom[nextPlayer];
-                    setTimeout(() => {
-                      movesRef.current.style.transition = 'transform 0.25s';
-                      movesRef.current.style.transform = 'unset';
-                    }, 0);
-                  }
-                }
-                store.nextPlayer = wasm.get_next_player(game);
-                setNextPlayer(store.nextPlayer);
+                setLastMove(wasm.get_last_move(game));
+                setNextPlayer(wasm.get_next_player(game));
                 updateSuitOrder();
                 
                 resolve();
@@ -172,7 +147,7 @@ const Game = ({store = {}}) => {
   }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
-  function setup(decks = 1, jokers = 2, ruleset = 'pickering') {
+  function setup() {
     if(!wasm) { return }
 
     setGameOver(false);
@@ -191,35 +166,31 @@ const Game = ({store = {}}) => {
     );
     */
 
-    store.ruleset = ruleset;
-
-    let game = wasm.create_game(players, decks, jokers, ruleset)
+    const game = wasm.create_game(players, decks, jokers, ruleset)
     setGame(game);
-    store.game = game;
-    let player = wasm.get_player(game, players[0]);
-    store.playerCards = assignCardIds(player);
-    setPlayerCards(store.playerCards);
+    const player = wasm.get_player(game, players[0]);
+    const playerCards = assignCardIds(player);
+    setPlayerCards(playerCards);
 
-    store.nextPlayer = wasm.get_next_player(game);
-    setNextPlayer(store.nextPlayer);
+    const nextPlayer = wasm.get_next_player(game);
+    setNextPlayer(nextPlayer);
     updateSuitOrder();
   }
 
   function updateSuitOrder() {
-    const suits = wasm.get_suit_order(store.game);
+    if(!wasm || !game) {
+        return
+    }
+
+    const suits = wasm.get_suit_order(game);
     setSuitOrder(suits);
   }
 
   function onNewGame() {
-    store.game = null;
-    store.nextPlayer = null;
-    store.lastMove = null;
-    store.playerCards = [];
-
-    setGame(store.game);
-    setNextPlayer(store.nextPlayer);
-    setLastMove(store.lastMove);
-    setPlayerCards(store.playerCards);
+    setGame(null);
+    setNextPlayer(null);
+    setLastMove(null);
+    setPlayerCards([]);
 
     setGameOver(false);
   }
@@ -287,15 +258,12 @@ const Game = ({store = {}}) => {
 
   function onSubmit() {
     let result = wasm.submit_move(game, 'player', selected);
-    console.log(result);
     const playerCards = assignCardIds(getPlayerCards(players[0]));
     setPlayerCards(playerCards);
     setSelected([]);
-    store.lastMove = wasm.get_last_move(game);
-    store.nextPlayer = wasm.get_next_player(game);
 
-    setLastMove(store.lastMove);
-    setNextPlayer(store.nextPlayer);
+    setLastMove(wasm.get_last_move(game));
+    setNextPlayer(wasm.get_next_player(game));
     updateSuitOrder(); 
     setShowTips(null);
   }
@@ -317,7 +285,6 @@ const Game = ({store = {}}) => {
 
     return (
       <div
-        ref={movesRef}
         className={css.moves}
         style={{ width: cardList.length * overlap + (cardWidth - overlap) + 'px' }}
       >
@@ -367,7 +334,7 @@ const Game = ({store = {}}) => {
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });
 
-    if(store.ruleset === 'pickering' && suitOrder.length > 0) {
+    if(ruleset === 'pickering' && suitOrder.length > 0) {
         return (<ul className={css.suitList}>
             { suits }
         </ul>);
@@ -461,5 +428,18 @@ const Game = ({store = {}}) => {
   );
 }
 
-export default Game;
+Game.propTypes = {
+  decks: PropTypes.number.isRequired,
+  jokers: PropTypes.number.isRequired,
+  ruleset: PropTypes.string.isRequired
+};
 
+const mapStateToProps = state => ({
+  decks: state.game.decks || 1,
+  jokers: state.game.jokers || 2,
+  ruleset: state.game.ruleset || 'pickering',
+});
+
+export default connect(
+  mapStateToProps,
+)(Game);
