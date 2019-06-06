@@ -8,7 +8,7 @@ import SuggestedMove from '../../components/suggested_move/SuggestedMove';
 
 import css from './Game.sass';
 
-const Game = ({store}) => {
+const Game = ({store = {}}) => {
   // Just hardcode for now
   const overlap = 30;
   const players = [
@@ -172,12 +172,15 @@ const Game = ({store}) => {
   }, [nextPlayer, game, wasm])
 
   // Functions/Callbacks
-  function onDeal(decks, jokers, ruleset) {
+  function setup(decks = 1, jokers = 2, ruleset = 'pickering') {
+    if(!wasm) { return }
+
     setGameOver(false);
     setLastMove(null);
     setNextPlayer(null);
     setWinners([]);
 
+    /*
     // google analytics hack
     window.ga && window.ga(
       'send',
@@ -186,6 +189,7 @@ const Game = ({store}) => {
       'start',
       ruleset
     );
+    */
 
     store.ruleset = ruleset;
 
@@ -424,12 +428,6 @@ const Game = ({store}) => {
     </div>
   );
 
-  const newGame = (
-    getFrontPage(
-        <NewGame deal={onDeal} />
-    )
-  );
-
   const gameSummary = gameOver && (
     getFrontPage(
       <div className={css.gameSummary}>
@@ -447,14 +445,16 @@ const Game = ({store}) => {
     )
   );
 
-  let page = newGame;
+  let page;
   if(gameOver) {
     page = gameSummary;
   } else if (game) {
     page = table;
+  } else {
+    setup()
   }
 
-  return wasm ? (
+  return wasm && page ? (
     page
   ) : (
     getFrontPage(<h1>Loading</h1>)

@@ -9,9 +9,10 @@ import {
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
-import Logout from "./components/logout/Logout";
+import Account from "./components/account/Account";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
+import Game from "./pages/game/Game";
 import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
@@ -46,6 +47,11 @@ if(auth.isAuthenticated()) {
 
 const inGameCache = {};
 
+/*
+    TODO:
+    - 404
+    - error boundary
+*/
 const App = () => {
   return(
     <Provider store={store}>
@@ -54,7 +60,7 @@ const App = () => {
             <span className={css.logo}>
                 <img src={logo}/>
             </span>
-            <Logout />
+            <Account />
             <span className={css.tagline}>
                 The Pu is silent
             </span>
@@ -65,6 +71,7 @@ const App = () => {
                 inGameCache={inGameCache} />}
              exact
         />
+        <Route path="/game/" component={Game} />
         <Route path="/about/" component={About} />
         <Route path="/privacy/" component={Privacy} />
         <Route path="/feedback/" component={Feedback} />

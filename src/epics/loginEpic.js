@@ -28,7 +28,11 @@ export default (auth) => {
 
     const loggedInEpic = action$ => action$.pipe(
       filter(action => action.type === LOGGED_IN),
-      tap(ev => history.push('/')),
+      tap(ev => {
+        if(location.pathname == '/login') {
+          history.push('/')
+        }
+      }),
       map(ev => (emptyAction))
     );
 

@@ -5,9 +5,16 @@ import { login } from '../../actions/auth.js';
 
 import { Link } from "react-router-dom";
 
-import css from './NewGame.sass';
+import css from './NewGameModal.sass';
 
-const NewGame = ({deal, onLogin, loggedIn}) => {
+const NewGameModal = ({
+  deal,
+  close,
+  onLogin,
+  loggedIn,
+  title,
+  cta
+}) => {
 
   const DEFAULT_JOKERS = 2;
   const DEFAULT_DECKS = 1;
@@ -40,34 +47,13 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
     deal(decks, j, ruleset);
   }
 
-  function getCallToAction() {
-    return 'Deal';
-  }
-
   return (
     <div>
-    { loggedIn ? null :
-    <p className={css.intro}>
-        Pusoy Dos is an addictive card game for 2 or more players
-        where the aim is to be the first player to get rid of all 
-        of your cards.
-    </p> }
-    <p className={css.intro}>
-        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against 
-        { loggedIn ? <span> your friends or </span> : null }
-        the computer.
-        <br/>
-          <span className={css.howtoplay}>
-            <Link 
-              to="/about"
-            >
-              Learn how to play.
-            </Link>
-          </span>
-
-    </p>
-    <div className={css.newGame}>
-        <h5>New Game</h5>
+        <div className={css.newGame}>
+        <h5>
+          { title }
+          <span className={css.close} onClick={close}>x</span>
+        </h5>
         <div className={`${css.body} ${css[ruleset]}`}>
             <p className={css.field}>
                 Players:
@@ -132,37 +118,23 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
                 className={css.button_calltoaction}
                 onClick={onClick}
             >
-            { getCallToAction() }
+            { cta }
             </button>
         </div>
-
-
     </div>
-    { loggedIn ? null : 
-      (<div className={css.loginCta}>
-        <button onClick={onLogin}>
-            Login to play with your friends
-        </button>
-      </div>) }
-
     </div>
   )
 };
 
-NewGame.propTypes = {
-    deal: PropTypes.func.isRequired,
-    loggedIn: PropTypes.bool.isRequired
+NewGameModal.propTypes = {
+    deal: PropTypes.func.isRequired
 };
-
-const mapStateToProps = state => ({
-    loggedIn: state.auth
-});
 
 const mapDispatchToProps = dispatch => ({
   onLogin: () => dispatch(login)
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
-)(NewGame);
+)(NewGameModal);
