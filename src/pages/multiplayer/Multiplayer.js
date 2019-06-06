@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import Game from "../game/Game";
 import NewGameModal from "../../components/newGameModal/NewGameModal";
 import css from "./Multiplayer.sass";
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { beginGame } from "../../actions/game";
 
 const MULTIPLAYER_GAME = 'multiplayer';
 const SINGLEPLAYER_GAME = 'computer';
 
-const Multiplayer = () => {
+const Multiplayer = ({onNewGame}) => {
 
     const [ gameType, setGameType ] = useState(null)
 
@@ -14,6 +17,9 @@ const Multiplayer = () => {
 
         // depending on game type, we're looking at going
         // into a single player game or a multiplayer lobby
+        if(gameType === SINGLEPLAYER_GAME){
+            return onNewGame(decks, jokers, ruleset)
+        }
         
     }
 
@@ -74,4 +80,18 @@ const Multiplayer = () => {
     )
 };
 
-export default Multiplayer;
+Multiplayer.propTypes = {
+    onNewGame: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = dispatch => ({
+  onNewGame: (decks, jokers, ruleset) => dispatch(beginGame(
+    decks, jokers, ruleset
+  ))
+});
+
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Multiplayer);
