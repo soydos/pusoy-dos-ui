@@ -25,7 +25,6 @@ import logo from "../assets/images/logo-landscape.svg";
 import css from './App.sass';
 import Auth from './auth/Auth';
 import createGame from './game/Game';
-import createAjax from './ajax';
 
 import { LOGGED_IN } from './actions/auth';
 
@@ -45,11 +44,15 @@ const store = createStore(
 const axiosInstance = axios.create({
   httpsAgent: new https.Agent({  
     rejectUnauthorized: false
-  })
+  }),
+  baseURL: window.api_root,
 });
-const ajax = createAjax(axiosInstance, window.api_root);
+
+axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = window.api_root;
+axiosInstance.defaults.headers.common['Content-Type'] = 'applicatoin/json';
+
 const auth = new Auth(store.dispatch.bind(store));
-const game = createGame(ajax);
+const game = createGame(axiosInstance);
 epicMiddleware.run(rootEpic(auth, game));
 
 if(auth.isAuthenticated()) {
