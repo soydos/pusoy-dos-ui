@@ -57,19 +57,15 @@ const App = () => {
     <Provider store={store}>
       <Router history={history}>
         <header>
-            <span className={css.logo}>
+            <Link to="/" className={css.logo}>
                 <img src={logo}/>
-            </span>
+            </Link>
             <Account />
             <span className={css.tagline}>
                 The Pu is silent
             </span>
         </header>
-        <Route
-            path="/"
-            component={FrontPage}
-             exact
-        />
+        <Route path="/" component={FrontPage} exact />
         <Route path="/game/" component={Game} />
         <Route path="/about/" component={About} />
         <Route path="/privacy/" component={Privacy} />
