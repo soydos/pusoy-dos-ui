@@ -1,7 +1,6 @@
-export default () => {
-  function createGame(description) {
-    console.log(description);
-    return Promise.resolve();
+export default (ajax) => {
+  async function createGame(description) {
+    return await ajax.post('/game', description)
   }
 
   return {

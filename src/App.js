@@ -9,6 +9,8 @@ import {
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
+import https from 'https';
+import axios from 'axios';
 import Account from "./components/account/Account";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
@@ -23,6 +25,7 @@ import logo from "../assets/images/logo-landscape.svg";
 import css from './App.sass';
 import Auth from './auth/Auth';
 import createGame from './game/Game';
+import createAjax from './ajax';
 
 import { LOGGED_IN } from './actions/auth';
 
@@ -39,8 +42,14 @@ const store = createStore(
     )
 );
 
+const axiosInstance = axios.create({
+  httpsAgent: new https.Agent({  
+    rejectUnauthorized: false
+  })
+});
+const ajax = createAjax(axiosInstance, window.api_root);
 const auth = new Auth(store.dispatch.bind(store));
-const game = createGame();
+const game = createGame(ajax);
 epicMiddleware.run(rootEpic(auth, game));
 
 if(auth.isAuthenticated()) {
