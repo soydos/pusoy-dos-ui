@@ -3,7 +3,7 @@ import {
   HANDLE_LOGIN,
   LOGGED_IN,
   LOGOUT_ACTION
-} from '../actions/auth.js';
+} from '../actions/auth';
 import { filter, tap, map } from 'rxjs/operators';
 import history from '../history';
 

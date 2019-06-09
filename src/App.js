@@ -12,7 +12,7 @@ import { createEpicMiddleware } from 'redux-observable';
 import Account from "./components/account/Account";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
-import Game from "./pages/game/Game";
+import GamePage from "./pages/game/Game";
 import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
@@ -22,6 +22,7 @@ import history from './history';
 import logo from "../assets/images/logo-landscape.svg";
 import css from './App.sass';
 import Auth from './auth/Auth';
+import createGame from './game/Game';
 
 import { LOGGED_IN } from './actions/auth';
 
@@ -39,7 +40,8 @@ const store = createStore(
 );
 
 const auth = new Auth(store.dispatch.bind(store));
-epicMiddleware.run(rootEpic(auth));
+const game = createGame();
+epicMiddleware.run(rootEpic(auth, game));
 
 if(auth.isAuthenticated()) {
   store.dispatch({ type: LOGGED_IN });
@@ -66,7 +68,7 @@ const App = () => {
             </span>
         </header>
         <Route path="/" component={FrontPage} exact />
-        <Route path="/game/" component={Game} />
+        <Route path="/game/" component={GamePage} />
         <Route path="/about/" component={About} />
         <Route path="/privacy/" component={Privacy} />
         <Route path="/feedback/" component={Feedback} />

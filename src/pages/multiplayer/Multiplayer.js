@@ -91,7 +91,7 @@ const mapDispatchToProps = dispatch => ({
   onNewCPUGame: (decks, jokers, ruleset) => dispatch(beginGame(
     decks, jokers, ruleset
   )),
-  onNewMultiplayeGame: (decks, jokers, ruleset) => dispatch(
+  onNewMultiplayerGame: (decks, jokers, ruleset) => dispatch(
     createGame(decks, jokers, ruleset)
   )
 

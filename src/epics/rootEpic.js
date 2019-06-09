@@ -1,9 +1,11 @@
 import { combineEpics } from 'redux-observable';
 
 import loginEpics from './loginEpic';
+import gameEpics from './gameEpic';
 import { beginGameEpic } from './historyEpic';
 
-export default (auth) => {
+// todo - inject epic object, not deps
+export default (auth, game) => {
 
   const { 
     loginEpic,
@@ -12,12 +14,17 @@ export default (auth) => {
     logoutEpic,
   } = loginEpics(auth);
 
+  const {
+    createGameEpic,
+  } = gameEpics(game);
+
   return combineEpics(
     loginEpic,
     handleLoginEpic,
     loggedInEpic,
     logoutEpic,
-    beginGameEpic
+    beginGameEpic,
+    createGameEpic,
   );
 };
 
