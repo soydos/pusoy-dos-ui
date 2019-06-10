@@ -16,9 +16,6 @@ export default (game) => {
           ruleset: action.ruleset
         }));
       }),
-      tap(action => {
-        console.log(action)
-      }),
       map(ev => (emptyAction))
   );
 

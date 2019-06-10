@@ -20,6 +20,7 @@ const NewGameModal = ({
   const DEFAULT_DECKS = 1;
   const DEFAULT_RULESET = 'pickering';
 
+  const [ disableButton, setDisableButton] = useState(false);
   const [ decks, setDecks ] = useState(DEFAULT_DECKS);
   const [ jokers, setJokers] = useState(DEFAULT_JOKERS);
   const [ ruleset, setRuleset] = useState(DEFAULT_RULESET);
@@ -43,6 +44,7 @@ const NewGameModal = ({
   }
 
   function onClick() {
+    setDisableButton(true);
     let j = ruleset == 'pickering' ? jokers : 0;
     deal(decks, j, ruleset);
   }
@@ -115,6 +117,7 @@ const NewGameModal = ({
             <div className={css.clearfix}></div>
             <hr/>
             <button
+                disabled={disableButton}
                 className={css.button_calltoaction}
                 onClick={onClick}
             >
