@@ -1,6 +1,6 @@
 export default (ajax) => {
-  async function createGame(description) {
-    return await ajax.post('/game', description)
+  function createGame(description) {
+    return ajax.post('/game', description)
   }
 
   return {

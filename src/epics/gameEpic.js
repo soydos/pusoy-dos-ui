@@ -1,10 +1,10 @@
 import {
-  CREATE_GAME
+  CREATE_GAME,
+  GAME_CREATED,
 } from '../actions/game';
 import { from } from 'rxjs';
 import { filter, tap, map, switchMap } from 'rxjs/operators';
 
-const emptyAction = { type: 'EMPTY' };
 
 export default (game) => {
   const createGameEpic = action$ => action$.pipe(
@@ -16,7 +16,7 @@ export default (game) => {
           ruleset: action.ruleset
         }));
       }),
-      map(ev => (emptyAction))
+      map(action => ({ type: GAME_CREATED, id: action.data.id }))
   );
 
   return {
