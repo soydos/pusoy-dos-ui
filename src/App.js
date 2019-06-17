@@ -19,6 +19,7 @@ import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 import Login from "./pages/login/Login";
+import Lobby from "./pages/lobby/Lobby";
 import rootEpic from './epics/rootEpic';
 import history from './history';
 import logo from "../assets/images/logo-landscape.svg";
@@ -90,6 +91,8 @@ const App = () => {
         />
 
         <Route path="/login/" component={Login} />
+
+        <Route path="/lobby/:id" component={Lobby} />
 
       <footer>
         <span className={css.copyright}>
