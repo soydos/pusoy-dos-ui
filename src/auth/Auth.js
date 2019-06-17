@@ -9,7 +9,7 @@ export default class Auth {
         clientID: window.clientId,
         redirectUri: `${window.location.origin}/login`,
         responseType: 'token id_token',
-        scope: 'openid'
+        scope: 'openid profile email'
       });
 
       this.dispatch = dispatch;
@@ -40,9 +40,8 @@ export default class Auth {
   }
 
   setSession(authResult) {
-    // Set isLoggedIn flag in localStorage
-
     // Set the time that the access token will expire at
+    console.log(authResult);
     let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
