@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import css from './Account.sass';
-import { logout, login } from '../../actions/auth.js';
+import { logout, beginLogin } from '../../actions/auth.js';
 
 const Account = ({loggedIn, onLogout, onLogin}) => {
 
@@ -27,7 +27,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onLogout: () => dispatch(logout),
-  onLogin: () => dispatch(login)
+  onLogin: () => dispatch(beginLogin)
 });
 
 export default connect(
