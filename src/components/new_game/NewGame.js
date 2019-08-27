@@ -155,7 +155,7 @@ NewGame.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    loggedIn: state.auth
+    loggedIn: state.auth.loggedIn
 });
 
 const mapDispatchToProps = dispatch => ({

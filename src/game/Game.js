@@ -3,7 +3,15 @@ export default (ajax) => {
     return ajax.post('/game', description)
   }
 
+  function requestLobby(id) {
+    return Promise.resolve({ data: {
+      id,
+      msg: 'yo from my lobby',
+    }});
+  }
+
   return {
     createGame,
+    requestLobby
   }
 };

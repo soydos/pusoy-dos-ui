@@ -1,5 +1,5 @@
 import auth0 from 'auth0-js';
-import { LOGGED_IN } from '../actions/auth.js';
+import { login } from '../actions/auth.js';
 
 export default class Auth {
 
@@ -50,9 +50,7 @@ export default class Auth {
     localStorage.setItem('accessToken', authResult.accessToken);
     localStorage.setItem('idToken', authResult.idToken);
     localStorage.setItem('expiresAt', expiresAt);
-    // navigate to the home route
-    // history.replace('/home');
-    this.dispatch({ type: LOGGED_IN });
+    this.dispatch(login);
   }
 
   renewSession() {

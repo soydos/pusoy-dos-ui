@@ -50,7 +50,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = window.api_root;
-axiosInstance.defaults.headers.common['Content-Type'] = 'applicatoin/json';
+axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
 
 const auth = new Auth(store.dispatch.bind(store));
 const game = createGame(axiosInstance);
@@ -59,8 +59,6 @@ epicMiddleware.run(rootEpic(auth, game));
 if(auth.isAuthenticated()) {
   store.dispatch({ type: LOGGED_IN });
 }
-
-const inGameCache = {};
 
 /*
     TODO:
