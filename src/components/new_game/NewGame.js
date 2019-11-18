@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { login } from '../../actions/auth.js';
+import { beginLogin } from '../../actions/auth.js';
 
 import { Link } from "react-router-dom";
 
@@ -159,7 +159,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: () => dispatch(login)
+  onLogin: () => dispatch(beginLogin)
 });
 
 export default connect(

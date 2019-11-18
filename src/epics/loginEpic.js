@@ -2,9 +2,17 @@ import {
   LOGIN_ACTION,
   HANDLE_LOGIN,
   LOGGED_IN,
-  LOGOUT_ACTION
+  LOGOUT_ACTION,
+  REDEEM_TOKEN
 } from '../actions/auth';
-import { filter, tap, map } from 'rxjs/operators';
+import {
+  switchMap,
+  filter,
+  tap,
+  map,
+  catchError,
+} from 'rxjs/operators';
+import { from, of } from 'rxjs';
 import history from '../history';
 
 const emptyAction = { type: 'EMPTY' };
@@ -28,12 +36,18 @@ export default (auth) => {
 
     const loggedInEpic = action$ => action$.pipe(
       filter(action => action.type === LOGGED_IN),
-      tap(ev => {
-        if(location.pathname == '/login') {
-          history.push('/')
-        }
-      }),
-      map(ev => (emptyAction))
+      switchMap(action => {
+        return from(auth.redeemToken({
+          token: action.accessToken
+        })).pipe(
+          map(action => ({
+            type: LOGIN_COMPLETE, 
+          })),
+          catchError(error => of({
+            type: LOGOUT_ACTION,
+          }))
+        )
+      })
     );
 
     const logoutEpic = action$ => action$.pipe(

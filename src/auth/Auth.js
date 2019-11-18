@@ -3,7 +3,7 @@ import { login } from '../actions/auth.js';
 
 export default class Auth {
 
-  constructor (dispatch) {
+  constructor (dispatch, ajax) {
       this.auth0 = new auth0.WebAuth({
         domain: 'soydos.eu.auth0.com',
         clientID: window.clientId,
@@ -13,10 +13,15 @@ export default class Auth {
       });
 
       this.dispatch = dispatch;
+      this.ajax = ajax;
   }
 
   login() {
     this.auth0.authorize();
+  }
+
+  redeemToken(token) {
+    return this.ajax.post('/redeem-token', { token })
   }
 
  handleAuthentication() {
@@ -24,9 +29,8 @@ export default class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
       } else if (err) {
-//        history.replace('/home');
         console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        this.logout();
       }
     });
   }
@@ -47,10 +51,7 @@ export default class Auth {
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
 
-    localStorage.setItem('accessToken', authResult.accessToken);
-    localStorage.setItem('idToken', authResult.idToken);
-    localStorage.setItem('expiresAt', expiresAt);
-    this.dispatch(login);
+    this.dispatch(login(this.accessToken));
   }
 
   renewSession() {
@@ -60,7 +61,6 @@ export default class Auth {
        } else if (err) {
          this.logout();
          console.log(err);
-         alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
        }
     });
   }
@@ -70,12 +70,6 @@ export default class Auth {
     this.accessToken = null;
     this.idToken = null;
     this.expiresAt = 0;
-
-    // Remove isLoggedIn flag from localStorage
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('idToken');
-    localStorage.removeItem('expiresAt');
 
 
     this.auth0.logout({

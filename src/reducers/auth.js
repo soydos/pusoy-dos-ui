@@ -1,10 +1,10 @@
-import { LOGGED_IN } from '../actions/auth';
+import { COMPLETE_LOGIN } from '../actions/auth';
 
-const defaultAuth = { loggedIn: false, idToken: null };
+const defaultAuth = { loggedIn: false };
 
 export default function (state = { ...defaultAuth}, action) {
   switch (action.type) {
-    case LOGGED_IN:
+    case COMPLETE_LOGIN:
       return { ...state, loggedIn: true };
     default:
       return state
