@@ -3,7 +3,8 @@ import {
   HANDLE_LOGIN,
   LOGGED_IN,
   LOGOUT_ACTION,
-  REDEEM_TOKEN
+  REDEEM_TOKEN,
+  COMPLETE_LOGIN,
 } from '../actions/auth';
 import {
   switchMap,
@@ -37,12 +38,15 @@ export default (auth) => {
     const loggedInEpic = action$ => action$.pipe(
       filter(action => action.type === LOGGED_IN),
       switchMap(action => {
-        return from(auth.redeemToken({
-          token: action.accessToken
-        })).pipe(
+        return from(auth.redeemToken(action.accessToken)).pipe(
           map(action => ({
-            type: LOGIN_COMPLETE, 
+            type: COMPLETE_LOGIN, 
           })),
+          tap(ev => {
+            if(window.location.pathname === "/login"){
+                window.location = '/';
+            }
+          }),
           catchError(error => of({
             type: LOGOUT_ACTION,
           }))

@@ -7,7 +7,6 @@ import Multiplayer from "../multiplayer/Multiplayer";
 import { beginGame } from "../../actions/game";
 
 const FrontPage = ({ loggedIn, onNewGame }) => {
-
     return loggedIn ? 
         <Multiplayer /> :
         <NewGame deal={onNewGame} />;
