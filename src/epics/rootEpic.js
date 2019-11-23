@@ -15,6 +15,7 @@ export default (auth, game) => {
     handleLoginEpic,
     loggedInEpic,
     logoutEpic,
+    checkAuthEpic
   } = loginEpics(auth);
 
   const {
@@ -31,6 +32,7 @@ export default (auth, game) => {
     gameCreatedEpic,
     createGameEpic,
     requestLobbyEpic,
+    checkAuthEpic,
   );
 };
 

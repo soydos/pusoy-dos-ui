@@ -5,6 +5,7 @@ import {
   LOGOUT_ACTION,
   REDEEM_TOKEN,
   COMPLETE_LOGIN,
+  CHECK_AUTH,
 } from '../actions/auth';
 import {
   switchMap,
@@ -39,9 +40,6 @@ export default (auth) => {
       filter(action => action.type === LOGGED_IN),
       switchMap(action => {
         return from(auth.redeemToken(action.accessToken)).pipe(
-          map(action => ({
-            type: COMPLETE_LOGIN, 
-          })),
           tap(ev => {
             if(window.location.pathname === "/login"){
                 window.location = '/';
@@ -62,10 +60,23 @@ export default (auth) => {
       map(ev => (emptyAction))
     );
 
+    const checkAuthEpic = action$ => action$.pipe(
+      filter(action => action.type === CHECK_AUTH),
+      switchMap(action => {
+        return from(auth.isAuthenticated()).pipe(
+          map(action => ({
+            type: COMPLETE_LOGIN, 
+          })),
+          catchError(error => of(emptyAction))
+        )
+      })
+    );
+
     return {
       loginEpic,
       handleLoginEpic,
       loggedInEpic,
       logoutEpic,
+      checkAuthEpic
     };
 };

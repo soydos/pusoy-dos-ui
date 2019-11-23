@@ -71,20 +71,11 @@ export default class Auth {
     this.idToken = null;
     this.expiresAt = 0;
 
-
-    this.auth0.logout({
-      return_to: window.location.origin
-    });
-
-    // navigate to the home route
-    //history.replace('/home');
+    this.auth0.logout();
   }
 
   isAuthenticated() {
-    // Check whether the current time is past the
-    // access token's expiry time
-    let expiresAt = localStorage.getItem('expiresAt');
-    return new Date().getTime() < expiresAt;
+    return this.ajax.get('/auth');
   }
 }
 

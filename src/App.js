@@ -27,7 +27,7 @@ import css from './App.sass';
 import Auth from './auth/Auth';
 import createGame from './game/Game';
 
-import { LOGGED_IN } from './actions/auth';
+import { CHECK_AUTH } from './actions/auth';
 
 import reducers from './reducers/rootReducer';
 
@@ -51,14 +51,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common['Access-Control-Allow-Origin'] = window.api_root;
 axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
+axiosInstance.defaults.withCredentials = true;
 
 const auth = new Auth(store.dispatch.bind(store), axiosInstance);
 const game = createGame(axiosInstance);
 epicMiddleware.run(rootEpic(auth, game));
 
-if(auth.isAuthenticated()) {
-
-}
+store.dispatch({type: CHECK_AUTH});
 
 /*
     TODO:

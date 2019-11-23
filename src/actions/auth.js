@@ -4,7 +4,9 @@ export const LOGGED_IN = 'LOGGED_IN';
 export const LOGOUT_ACTION = 'LOGOUT';
 
 export const REDEEM_TOKEN = 'REDEEM_TOKEN';
+export const CHECK_AUTH = 'CHECK_AUTH';
 export const COMPLETE_LOGIN = 'COMPLETE_LOGIN';
+export const NOT_LOGGED_IN = 'NOT_LOGGED_IN';
 
 export const beginLogin = { type: LOGIN_ACTION };
 export const login = (accessToken) => (
