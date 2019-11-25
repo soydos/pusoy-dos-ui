@@ -3,6 +3,10 @@ export default (ajax) => {
     return ajax.post('/game', description)
   }
 
+  function loadCurrentGames() {
+    return ajax.get('/current-games')
+  }
+
   function requestLobby(id) {
     return Promise.resolve({ data: {
       id,
@@ -12,6 +16,7 @@ export default (ajax) => {
 
   return {
     createGame,
-    requestLobby
+    requestLobby,
+    loadCurrentGames,
   }
 };

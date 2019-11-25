@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import Game from "../game/Game";
 import NewGameModal from "../../components/newGameModal/NewGameModal";
 import css from "./Multiplayer.sass";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { beginGame, createGame } from "../../actions/game";
-
+import { LOAD_CURRENT_GAMES } from "../../actions/user";
 const MULTIPLAYER_GAME = 'multiplayer';
 const SINGLEPLAYER_GAME = 'computer';
 
-const Multiplayer = ({onNewCPUGame, onNewMultiplayerGame}) => {
+const Multiplayer = (
+    {
+      onNewCPUGame,
+      onNewMultiplayerGame,
+      currentGames,
+      loadCurrentGames,
+    }
+    ) => {
 
     const [ gameType, setGameType ] = useState(null)
+
+    useEffect(loadCurrentGames, []);
 
     function onDeal(decks, jokers, ruleset) {
 
@@ -50,10 +60,46 @@ const Multiplayer = ({onNewCPUGame, onNewMultiplayerGame}) => {
         'Deal'
     }
 
+    function getCurrentGames() {
+        let activeGames = filterGames('active');
+        let pendingGames = filterGames('pending');
+        return (<div className={css.currentGames}>
+            <h3>Your Games</h3>
+            { activeGames.length > 0 &&
+              <>
+                <h4>Active Games</h4>
+                { activeGames }
+              </>
+            }
+
+            { pendingGames.length > 0 &&
+              <>
+                <h4>Games not started</h4>
+                { pendingGames }
+              </>
+            }
+
+        </div>);
+    }
+
+    function getGameLink(game) {
+        return (<div key={game.id} className={css.gameLink}>
+            <Link to={`/game/${game.id}`}>
+              { game.id }
+            </Link>
+        </div>);
+    }
+
+    function filterGames(status) {
+        return currentGames.filter(
+            game => (game.status === status)
+        ).map(getGameLink)
+    }
+
     return (
       <>
       <div className={css.multiplayer}>
-        { /* <Game store={inGameCache} /> */ }
+        <h3>New Game</h3>
         <span
           className={css.button}
           onClick={createGameTypeToggle(MULTIPLAYER_GAME)}
@@ -78,6 +124,12 @@ const Multiplayer = ({onNewCPUGame, onNewMultiplayerGame}) => {
           cta={ getModalCta() }
         /> 
       }
+
+
+      {
+        (currentGames.length > 0) &&
+            getCurrentGames()
+      }
       </>
     )
 };
@@ -85,7 +137,13 @@ const Multiplayer = ({onNewCPUGame, onNewMultiplayerGame}) => {
 Multiplayer.propTypes = {
   onNewCPUGame: PropTypes.func.isRequired,
   onNewMultiplayerGame: PropTypes.func.isRequired,
+  currentGames: PropTypes.array.isRequired,
+  loadCurrentGames: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+    currentGames: state.playerGames.current
+});
 
 const mapDispatchToProps = dispatch => ({
   onNewCPUGame: (decks, jokers, ruleset) => dispatch(beginGame(
@@ -93,12 +151,14 @@ const mapDispatchToProps = dispatch => ({
   )),
   onNewMultiplayerGame: (decks, jokers, ruleset) => dispatch(
     createGame(decks, jokers, ruleset)
-  )
-
+  ),
+  loadCurrentGames: () => {
+    dispatch({ type: LOAD_CURRENT_GAMES })
+  },
 });
 
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Multiplayer);

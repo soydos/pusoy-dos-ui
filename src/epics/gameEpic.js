@@ -4,8 +4,19 @@ import {
   REQUEST_LOBBY,
   LOBBY_INFO
 } from '../actions/game';
-import { from } from 'rxjs';
-import { filter, tap, map, switchMap } from 'rxjs/operators';
+import {
+  LOAD_CURRENT_GAMES,
+  CURRENT_GAMES_LOAD_ERROR,
+  CURRENT_GAMES_LOADED 
+} from '../actions/user';
+import { from, of } from 'rxjs';
+import {
+  filter,
+  tap,
+  map,
+  switchMap,
+  catchError 
+} from 'rxjs/operators';
 
 export default (game) => {
   const createGameEpic = action$ => action$.pipe(
@@ -29,8 +40,23 @@ export default (game) => {
 
   );
 
+  const getCurrentGamesEpic = action$ => action$.pipe(
+      filter(action => action.type === LOAD_CURRENT_GAMES),
+      switchMap(action => {
+        return from(game.loadCurrentGames()).pipe(
+          map(action => (
+            { type: CURRENT_GAMES_LOADED, data: action.data }
+          )),
+          catchError(error => of({
+            type: CURRENT_GAMES_LOAD_ERROR
+          }))
+        );
+      }),
+  );
+
   return {
     createGameEpic,
     requestLobbyEpic,
+    getCurrentGamesEpic
   };
 };

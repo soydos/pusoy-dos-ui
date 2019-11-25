@@ -21,6 +21,7 @@ export default (auth, game) => {
   const {
     createGameEpic,
     requestLobbyEpic,
+    getCurrentGamesEpic,
   } = gameEpics(game);
 
   return combineEpics(
@@ -33,6 +34,7 @@ export default (auth, game) => {
     createGameEpic,
     requestLobbyEpic,
     checkAuthEpic,
+    getCurrentGamesEpic,
   );
 };
 
