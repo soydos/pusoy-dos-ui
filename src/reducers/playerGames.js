@@ -9,10 +9,8 @@ export default function (state = defaultState, action) {
     case CURRENT_GAMES_LOADED:
       return {
         ...state,
-        current: [
-            {id:1, status: 'pending'},
-            {id:2, status: 'active'}
-        ],
+        current: action.data.games.map(
+            game => ({status: "pending", ...game}))
       };
     default:
       return state
