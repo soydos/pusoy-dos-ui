@@ -20,6 +20,7 @@ import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 import Login from "./pages/login/Login";
 import Lobby from "./pages/lobby/Lobby";
+import MultiplayerGame from "./pages/multiplayer-game/MultiplayerGame";
 import rootEpic from './epics/rootEpic';
 import history from './history';
 import logo from "../assets/images/logo-landscape.svg";
@@ -78,7 +79,8 @@ const App = () => {
             </span>
         </header>
         <Route path="/" component={FrontPage} exact />
-        <Route path="/game/" component={GamePage} />
+        <Route path="/game/:id" component={MultiplayerGame} />
+        <Route path="/game/" component={GamePage} exact />
         <Route path="/about/" component={About} />
         <Route path="/privacy/" component={Privacy} />
         <Route path="/feedback/" component={Feedback} />
