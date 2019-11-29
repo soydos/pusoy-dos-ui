@@ -18,7 +18,7 @@ export const beginGameEpic = action$ => action$.pipe(
 export const gameCreatedEpic = action$ => action$.pipe(
   filter(action => action.type === GAME_CREATED),
   tap(action => {
-    history.push(`/lobby/${action.id}`);
+    history.push(`/game/${action.id}`);
   }),
   map(ev => (emptyAction))
 );

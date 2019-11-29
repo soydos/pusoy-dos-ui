@@ -22,6 +22,7 @@ export default (auth, game) => {
     createGameEpic,
     requestLobbyEpic,
     getCurrentGamesEpic,
+    getGameEpic,
   } = gameEpics(game);
 
   return combineEpics(
@@ -35,6 +36,7 @@ export default (auth, game) => {
     requestLobbyEpic,
     checkAuthEpic,
     getCurrentGamesEpic,
+    getGameEpic,
   );
 };
 

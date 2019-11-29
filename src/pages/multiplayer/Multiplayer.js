@@ -61,8 +61,8 @@ const Multiplayer = (
     }
 
     function getCurrentGames() {
-        let activeGames = filterGames('active');
-        let pendingGames = filterGames('pending');
+        let activeGames = filterGames('Active');
+        let pendingGames = filterGames('Pending');
         return (<div className={css.currentGames}>
             <h3>Your Games</h3>
             { activeGames.length > 0 &&

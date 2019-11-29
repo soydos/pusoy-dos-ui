@@ -1,33 +1,35 @@
+import { LOAD_GAME } from "../../actions/game";
+import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
-const MultiplayerGame = ({match}) => {
+const MultiplayerGame = ({ match, loadGame, gameInfo }) => {
+    useEffect(()=>loadGame(match.params.id), []);
+
+    function getJoinButton() {
+        if(gameInfo && !gameInfo.inGame){
+            return (<button>Join</button>);
+        }
+    }
 
     return (<div>
         <h1>multiplayer game {match.params.id}</h1>
+
+        { getJoinButton() }
     </div>);
 };
 
-/*
 const mapStateToProps = state => ({
-    currentGames: state.playerGames.current
+    gameInfo: state.selectedGame
 });
 
 const mapDispatchToProps = dispatch => ({
-  onNewCPUGame: (decks, jokers, ruleset) => dispatch(beginGame(
-    decks, jokers, ruleset
-  )),
-  onNewMultiplayerGame: (decks, jokers, ruleset) => dispatch(
-    createGame(decks, jokers, ruleset)
-  ),
-  loadCurrentGames: () => {
-    dispatch({ type: LOAD_CURRENT_GAMES })
+  loadGame: (id) => {
+    dispatch({ type: LOAD_GAME, id })
   },
 });
 
 export default connect(
-  mapStateToProps,
+  /*mapStateToProps*/ null,
   mapDispatchToProps,
 )(MultiplayerGame);
-*/
 
-export default MultiplayerGame;

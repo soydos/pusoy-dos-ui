@@ -19,7 +19,6 @@ import Privacy from "./pages/privacy/Privacy";
 import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 import Login from "./pages/login/Login";
-import Lobby from "./pages/lobby/Lobby";
 import MultiplayerGame from "./pages/multiplayer-game/MultiplayerGame";
 import rootEpic from './epics/rootEpic';
 import history from './history';
@@ -91,7 +90,6 @@ const App = () => {
 
         <Route path="/login/" component={Login} />
 
-        <Route path="/lobby/:id" component={Lobby} />
 
       <footer>
         <span className={css.copyright}>

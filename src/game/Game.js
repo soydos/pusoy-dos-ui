@@ -7,16 +7,13 @@ export default (ajax) => {
     return ajax.get('/current-games')
   }
 
-  function requestLobby(id) {
-    return Promise.resolve({ data: {
-      id,
-      msg: 'yo from my lobby',
-    }});
+  function loadGame(id) {
+    return ajax.get(`/game/${id}`)
   }
 
   return {
     createGame,
-    requestLobby,
     loadCurrentGames,
+    loadGame,
   }
 };
