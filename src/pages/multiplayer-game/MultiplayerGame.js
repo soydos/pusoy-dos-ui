@@ -3,15 +3,18 @@ import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 const MultiplayerGame = ({ match, loadGame, gameInfo, joinGame }) => {
+    let clickedJoinButton = false;
+
     useEffect(()=>loadGame(match.params.id), []);
 
     function getJoinButton() {
-        if(gameInfo && !gameInfo.inGame){
+        if(gameInfo && !gameInfo.inGame && !clickedJoinButton){
             return (<button onClick={onJoinGame}>Join</button>);
         }
     }
 
     function onJoinGame() {
+        clickedJoinButton = true;
         joinGame(match.params.id);
     }
 

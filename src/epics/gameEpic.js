@@ -5,6 +5,8 @@ import {
   LOBBY_INFO,
   LOAD_GAME,
   GAME_LOADED,
+  JOIN_GAME,
+  GAME_JOINED,
 } from '../actions/game';
 import {
   LOAD_CURRENT_GAMES,
@@ -70,11 +72,26 @@ export default (game) => {
       }),
   );
 
+  const joinGameEpic = action$ => action$.pipe(
+      filter(action => action.type === JOIN_GAME),
+      switchMap(action => {
+        return from(game.joinGame(action.id)).pipe(
+          map(action => (
+            { type: GAME_JOINED }
+          )),
+          catchError(error => of({
+            type: CURRENT_GAMES_LOAD_ERROR
+          }))
+        );
+      }),
+  );
+
 
   return {
     createGameEpic,
     requestLobbyEpic,
     getCurrentGamesEpic,
     getGameEpic,
+    joinGameEpic,
   };
 };

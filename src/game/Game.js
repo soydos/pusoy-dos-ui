@@ -11,9 +11,14 @@ export default (ajax) => {
     return ajax.get(`/game/${id}`)
   }
 
+  function joinGame(id) {
+    return ajax.post(`/game/join/${id}`)
+  }
+
   return {
     createGame,
     loadCurrentGames,
     loadGame,
+    joinGame
   }
 };
