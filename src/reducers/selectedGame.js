@@ -6,6 +6,7 @@ export default function (state = {}, action) {
       return {
         created: action.data.created_user,
         inGame: action.data.in_game,
+        users: action.data.game_details.users,
         ...state
       };
     default:

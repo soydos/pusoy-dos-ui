@@ -7,6 +7,8 @@ import {
   GAME_LOADED,
   JOIN_GAME,
   GAME_JOINED,
+  DEAL_GAME,
+  DEAL_COMPLETE,
 } from '../actions/game';
 import {
   LOAD_CURRENT_GAMES,
@@ -86,6 +88,20 @@ export default (game) => {
       }),
   );
 
+  const dealGameEpic = action$ => action$.pipe(
+      filter(action => action.type === DEAL_GAME),
+      switchMap(action => {
+        return from(game.deal(action.id)).pipe(
+          map(action => (
+            { type: DEAL_COMPLETE }
+          )),
+          catchError(error => of({
+            type: CURRENT_GAMES_LOAD_ERROR
+          }))
+        );
+      }),
+
+  );
 
   return {
     createGameEpic,
@@ -93,5 +109,6 @@ export default (game) => {
     getCurrentGamesEpic,
     getGameEpic,
     joinGameEpic,
+    dealGameEpic,
   };
 };

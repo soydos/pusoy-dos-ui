@@ -1,9 +1,16 @@
-import { LOAD_GAME, JOIN_GAME } from "../../actions/game";
+import { LOAD_GAME, JOIN_GAME, DEAL_GAME } from "../../actions/game";
 import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
-const MultiplayerGame = ({ match, loadGame, gameInfo, joinGame }) => {
-    let clickedJoinButton = false;
+const MultiplayerGame = ({
+    match,
+    loadGame,
+    gameInfo,
+    joinGame,
+    dealGame,
+}) => {
+    const [clickedJoinButton, setClickedJoinButton] = useState(false);
+    const [clickedDealButton, setClickedDealButton] = useState(false);
 
     useEffect(()=>loadGame(match.params.id), []);
 
@@ -13,15 +20,42 @@ const MultiplayerGame = ({ match, loadGame, gameInfo, joinGame }) => {
         }
     }
 
+    function getPlayerList() {
+        if(gameInfo && gameInfo.users) {
+
+            let users = gameInfo.users.map(user => (
+                <li key={user.sub}>{ user.name }</li>
+            ));
+            return (<div>
+                <h4>Players</h4>
+                <ul>
+                    { users }
+                </ul>
+            </div>);
+        }
+    }
+
+    function getDealButton() {
+        if(gameInfo && gameInfo.created && gameInfo.users.length > 1 && !clickedDealButton){
+            return (<button onClick={onDealGame}>Deal</button>);
+        }
+    }
+
     function onJoinGame() {
-        clickedJoinButton = true;
+        setClickedJoinButton(true);
         joinGame(match.params.id);
+    }
+
+    function onDealGame() {
+        setClickedDealButton(true);
+        dealGame(match.params.id);
     }
 
     return (<div>
         <h1>multiplayer game {match.params.id}</h1>
-
         { getJoinButton() }
+        { getPlayerList() }
+        { getDealButton() }
     </div>);
 };
 
@@ -35,7 +69,10 @@ const mapDispatchToProps = dispatch => ({
   },
   joinGame: (id) => {
     dispatch({ type: JOIN_GAME, id })
-  }
+  },
+  dealGame: (id) => {
+    dispatch({ type: DEAL_GAME, id })
+  },
 });
 
 export default connect(

@@ -24,6 +24,7 @@ export default (auth, game) => {
     getCurrentGamesEpic,
     getGameEpic,
     joinGameEpic,
+    dealGameEpic,
   } = gameEpics(game);
 
   return combineEpics(
@@ -39,6 +40,7 @@ export default (auth, game) => {
     getCurrentGamesEpic,
     getGameEpic,
     joinGameEpic,
+    dealGameEpic,
   );
 };
 

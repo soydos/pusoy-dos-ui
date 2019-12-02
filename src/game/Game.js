@@ -15,10 +15,15 @@ export default (ajax) => {
     return ajax.post(`/game/join/${id}`)
   }
 
+  function deal(id) {
+    return ajax.post(`/game/deal/${id}`)
+  }
+
   return {
     createGame,
     loadCurrentGames,
     loadGame,
-    joinGame
+    joinGame,
+    deal,
   }
 };
