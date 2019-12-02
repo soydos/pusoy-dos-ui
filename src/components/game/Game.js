@@ -424,9 +424,9 @@ Game.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  decks: state.game.decks || 1,
-  jokers: state.game.jokers || 2,
-  ruleset: state.game.ruleset || 'pickering',
+  decks: state.selectedGame.decks || 1,
+  jokers: state.selectedGame.jokers || 2,
+  ruleset: state.selectedGame.ruleset || 'pickering',
 });
 
 export default connect(

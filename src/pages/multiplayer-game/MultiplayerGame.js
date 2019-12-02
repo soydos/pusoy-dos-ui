@@ -1,4 +1,5 @@
 import { LOAD_GAME, JOIN_GAME, DEAL_GAME } from "../../actions/game";
+import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
@@ -62,7 +63,7 @@ const MultiplayerGame = ({
                 </>
             );
         } else if(gameInfo.status === "Active") {
-            return <h2>Game!</h2>
+            return <Game />
         }
     }
 
