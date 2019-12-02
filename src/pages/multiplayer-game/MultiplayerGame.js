@@ -51,11 +51,23 @@ const MultiplayerGame = ({
         dealGame(match.params.id);
     }
 
+    function getMainSection() {
+        if(gameInfo.status === "Pending") {
+            return (
+                <>
+                    <h1>multiplayer game {match.params.id}</h1>
+                    { getJoinButton() }
+                    { getPlayerList() }
+                    { getDealButton() }
+                </>
+            );
+        } else if(gameInfo.status === "Active") {
+            return <h2>Game!</h2>
+        }
+    }
+
     return (<div>
-        <h1>multiplayer game {match.params.id}</h1>
-        { getJoinButton() }
-        { getPlayerList() }
-        { getDealButton() }
+        { getMainSection() }
     </div>);
 };
 
