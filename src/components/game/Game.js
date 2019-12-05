@@ -6,10 +6,11 @@ import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 import Card from '../../components/card/Card';
 import SuggestedMove from '../../components/suggested_move/SuggestedMove';
+import { getHandDescription } from '../../game_utils';
 
 import css from './Game.sass';
 
-const Game = ({ decks, jokers, ruleset }) => {
+const Game = ({ cards, users, decks, jokers, ruleset }) => {
   // Just hardcode for now
   const overlap = 30;
   const players = [
@@ -21,7 +22,7 @@ const Game = ({ decks, jokers, ruleset }) => {
 
 
   // State
-  const [ playerCards, setPlayerCards ] = useState([]);
+  const [ playerCards, setPlayerCards ] = useState(assignCardIds(cards));
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
   const [ lastMove, setLastMove ] = useState(null);
@@ -65,47 +66,6 @@ const Game = ({ decks, jokers, ruleset }) => {
     }
 
     return wasm.check_move(game, selected) ? 'green' : 'red';
-  }
-
-  function getHandDescription(move) {
-    const type = move.type;
-    const hand = move.cards;
-
-    let joker = false;
-
-    switch (type) {
-      case 'single':
-        joker = hand.is_joker;
-        return `${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`;
-        break;
-      case 'pair':
-      case 'prial':
-        joker = hand.some(card => card.is_joker);
-        return `${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`;
-        break;
-      case 'fivecardtrick':
-        switch (hand.trick_type) {
-          case 'flush':
-            joker = hand.cards.some(card => card.is_joker);
-            return `${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`;
-            break;
-          case 'fullhouse':
-            joker = hand.cards.some(card => card.is_joker);
-            return `Full House${joker ? ' (Joker)' : ''}`;
-            break;
-          case 'fourofakind':
-            joker = hand.cards.some(card => card.is_joker);
-            return `Four of a Kind${joker ? ' (Joker)' : ''}`;
-            break;
-          default:
-            joker = hand.cards.some(card => card.is_joker);
-            return `${type}${joker ? ' (Joker)' : ''}`;
-            break;
-        }
-        break;
-      default:
-        return type;
-    }
   }
 
   function cpuUpdate() {
@@ -157,8 +117,7 @@ const Game = ({ decks, jokers, ruleset }) => {
 
     const game = wasm.create_game(players, decks, jokers, ruleset)
     setGame(game);
-    const player = wasm.get_player(game, players[0]);
-    const playerCards = assignCardIds(player);
+    const playerCards = assignCardIds(cards);
     setPlayerCards(playerCards);
 
     const nextPlayer = wasm.get_next_player(game);
@@ -261,8 +220,8 @@ const Game = ({ decks, jokers, ruleset }) => {
     return wasm.get_player(game, player);
   }
 
-  function getHiddenCards(player) {
-    return getPlayerCards(player).map((_, index) => index);
+  function getHiddenCards(cardCount) {
+    return [...Array(cardCount).keys()];
   }
 
   function displayLastMove() {
@@ -318,7 +277,7 @@ const Game = ({ decks, jokers, ruleset }) => {
       'hearts': '&hearts;',
       'clubs': '&clubs;'
     };
-    const suits = suitOrder.reverse().map((suit, index) => {
+    const suits = suitOrder.slice().reverse().map((suit, index) => {
       return (<li className={`${css.suit} ${css[suit]}`} key={suit}
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });
@@ -340,19 +299,22 @@ const Game = ({ decks, jokers, ruleset }) => {
     </div>);
   }
 
+  function displayOpponents() {
+    return users.filter((_, index) => index > 0)
+        .map((user, index) => {
+            return (
+                <div key={index} id={css.cpu1} className={nextPlayer === user.sub ? css.turn : undefined}>
+                  <Opponent cards={getHiddenCards(user.card_count)} vertical={true} />
+                </div>
+            )
+        });
+  }
+
   // HTML
   const table = wasm && game && (
     <div className={css.game}>
       <div className={css.table}>
-        <div id={css.cpu1} className={nextPlayer === players[1] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[1])} vertical={true} />
-        </div>
-        <div id={css.cpu2} className={nextPlayer === players[2] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[2])} />
-        </div>
-        <div id={css.cpu3} className={nextPlayer === players[3] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[3])} vertical={true} />
-        </div>
+        { displayOpponents() }
         { displayLastMove() }
         <div>
           { getSuitOrder() }
@@ -420,13 +382,17 @@ const Game = ({ decks, jokers, ruleset }) => {
 Game.propTypes = {
   decks: PropTypes.number.isRequired,
   jokers: PropTypes.number.isRequired,
-  ruleset: PropTypes.string.isRequired
+  ruleset: PropTypes.string.isRequired,
+  cards: PropTypes.array,
+  users: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
   decks: state.selectedGame.decks || 1,
   jokers: state.selectedGame.jokers || 2,
   ruleset: state.selectedGame.ruleset || 'pickering',
+  cards: state.selectedGame.cards,
+  users: state.selectedGame.users,
 });
 
 export default connect(

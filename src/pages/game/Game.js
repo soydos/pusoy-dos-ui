@@ -318,7 +318,7 @@ const Game = ({ decks, jokers, ruleset }) => {
       'hearts': '&hearts;',
       'clubs': '&clubs;'
     };
-    const suits = suitOrder.reverse().map((suit, index) => {
+    const suits = suitOrder.slice().reverse().map((suit, index) => {
       return (<li className={`${css.suit} ${css[suit]}`} key={suit}
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });

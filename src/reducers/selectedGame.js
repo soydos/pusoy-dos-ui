@@ -9,6 +9,7 @@ export default function (state = {}, action) {
         inGame: action.data.in_game,
         users: action.data.users,
         status: action.data.status,
+        cards: action.data.hand,
       };
     default:
       return state

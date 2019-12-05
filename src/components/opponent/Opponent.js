@@ -24,6 +24,8 @@ const Opponent = ({ cards, vertical }) => {
     ? {width: cardSize.width + 'px', height: (cards.length * cardOverlap.vertical + (cardSize.height - cardOverlap.vertical)) + 'px'}
     : {width: (cards.length * cardOverlap.horizontal + (cardSize.width - cardOverlap.horizontal)) + 'px', height: cardSize.height + 'px'};
 
+  const key = Math.random();
+
   return (
     <div
       className={css.opponent}
