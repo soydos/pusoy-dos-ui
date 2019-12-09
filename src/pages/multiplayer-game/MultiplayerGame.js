@@ -63,7 +63,7 @@ const MultiplayerGame = ({
                 </>
             );
         } else if(gameInfo.status === "Active") {
-            return <Game />
+            return <Game gameId={match.params.id} />
         }
     }
 

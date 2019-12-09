@@ -12,6 +12,7 @@ import { SUBMIT_MOVE } from '../../actions/game';
 import css from './Game.sass';
 
 const Game = ({
+    gameId,
     cards,
     users,
     decks,
@@ -219,7 +220,7 @@ const Game = ({
 
   function onSubmit() {
     // todo - wasm validation
-    submitMove(selected);
+    submitMove(gameId, selected);
     // temp remove cards for speed
     selected.forEach(selectedCard => {
         const i = cards.findIndex(card => (card.rank === selectedCard.rank && card.suit === selectedCard.suit))
@@ -383,6 +384,7 @@ const Game = ({
 }
 
 Game.propTypes = {
+  gameId: PropTypes.string.isRequired,
   decks: PropTypes.number.isRequired,
   jokers: PropTypes.number.isRequired,
   ruleset: PropTypes.string.isRequired,
@@ -406,8 +408,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    submitMove: (selected) => {
-        dispatch({ type: SUBMIT_MOVE, selected });
+    submitMove: (id, selected) => {
+        dispatch({ type: SUBMIT_MOVE, id, selected });
     },
 });
 

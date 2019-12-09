@@ -9,6 +9,7 @@ import {
   GAME_JOINED,
   DEAL_GAME,
   DEAL_COMPLETE,
+  SUBMIT_MOVE,
 } from '../actions/game';
 import {
   LOAD_CURRENT_GAMES,
@@ -100,8 +101,22 @@ export default (game) => {
           }))
         );
       }),
-
   );
+
+  const submitMoveEpic = action$ => action$.pipe(
+      filter(action => action.type === SUBMIT_MOVE),
+      switchMap(action => {
+        return from(game.submitMove(action.id, action.selected)).pipe(
+          map(action => (
+            { type: SUBMIT_SUCCESSFUL }
+          )),
+          catchError(error => of({
+            type: SUBMIT_ERROR
+          }))
+        );
+      }),
+  );
+
 
   return {
     createGameEpic,
@@ -110,5 +125,6 @@ export default (game) => {
     getGameEpic,
     joinGameEpic,
     dealGameEpic,
+    submitMoveEpic,
   };
 };

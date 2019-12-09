@@ -19,11 +19,16 @@ export default (ajax) => {
     return ajax.post(`/game/deal/${id}`)
   }
 
+  function submitMove(id, selectedCards) {
+    return ajax.post(`/game/${id}`)
+  }
+
   return {
     createGame,
     loadCurrentGames,
     loadGame,
     joinGame,
     deal,
+    submitMove,
   }
 };
