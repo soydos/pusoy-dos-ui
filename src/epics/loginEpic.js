@@ -65,7 +65,7 @@ export default (auth) => {
       switchMap(action => {
         return from(auth.isAuthenticated()).pipe(
           map(action => ({
-            type: COMPLETE_LOGIN, 
+            type: COMPLETE_LOGIN, user: action.data.user,
           })),
           catchError(error => of(emptyAction))
         )

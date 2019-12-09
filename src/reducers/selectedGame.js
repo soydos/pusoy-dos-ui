@@ -10,6 +10,8 @@ export default function (state = {}, action) {
         users: action.data.users,
         status: action.data.status,
         cards: action.data.hand,
+        lastMove: action.data.last_move,
+        nextPlayer: action.data.next_player,
       };
     default:
       return state

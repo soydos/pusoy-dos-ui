@@ -7,6 +7,7 @@ export const JOIN_GAME = 'JOIN_GAME';
 export const GAME_JOINED = 'GAME_JOINED';
 export const DEAL_GAME = 'DEAL_GAME';
 export const DEAL_COMPLETE = 'DEAL_COMPLETE';
+export const SUBMIT_MOVE = 'SUBMIT_MOVE';
 
 export const beginGame = (decks, jokers, ruleset) => ({
     type: BEGIN_GAME,
