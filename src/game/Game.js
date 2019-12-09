@@ -20,7 +20,14 @@ export default (ajax) => {
   }
 
   function submitMove(id, selectedCards) {
-    return ajax.post(`/game/${id}`)
+    const cards = selectedCards.map(card => {
+        return {
+            suit: card.suit,
+            rank: card.rank,
+            is_joker: card.is_joker,
+        }
+    });
+    return ajax.post(`/game/${id}`, { hand: cards })
   }
 
   return {
