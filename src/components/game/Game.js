@@ -52,6 +52,8 @@ const Game = ({
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
     setCardWidth(width);
+    setLastMove(lastPlayedMove);
+    setNextPlayer(nextP);
   });
 
   // Load WASM library

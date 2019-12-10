@@ -3,6 +3,8 @@ import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
+const POLL_RATE = 5000;
+
 const MultiplayerGame = ({
     match,
     loadGame,
@@ -13,7 +15,16 @@ const MultiplayerGame = ({
     const [clickedJoinButton, setClickedJoinButton] = useState(false);
     const [clickedDealButton, setClickedDealButton] = useState(false);
 
-    useEffect(()=>loadGame(match.params.id), []);
+    useEffect(()=>{
+        loadGame(match.params.id);
+        let keepLoading = setInterval(()=>{
+            loadGame(match.params.id);
+        }, POLL_RATE);
+
+        return ()=>{
+            clearInterval(keepLoading);
+        };
+    }, []);
 
     function getJoinButton() {
         if(gameInfo && !gameInfo.inGame && !clickedJoinButton){

@@ -106,9 +106,10 @@ export default (game) => {
   const submitMoveEpic = action$ => action$.pipe(
       filter(action => action.type === SUBMIT_MOVE),
       switchMap(action => {
+        const id = action.id;
         return from(game.submitMove(action.id, action.selected)).pipe(
           map(action => (
-            { type: SUBMIT_SUCCESSFUL }
+            { type: LOAD_GAME, id }
           )),
           catchError(error => of({
             type: SUBMIT_ERROR
