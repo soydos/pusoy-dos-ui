@@ -65,27 +65,29 @@ const Multiplayer = (
         let pendingGames = filterGames('Pending');
         return (<div className={css.currentGames}>
             <h3>Your Games</h3>
-            { activeGames.length > 0 &&
-              <>
-                <h4>Active Games</h4>
-                { activeGames }
-              </>
-            }
+            <div className={css.listBody}>
+                { activeGames.length > 0 &&
+                  <>
+                    <h4 className={css.activeGames}>Active Games</h4>
+                    { activeGames }
+                  </>
+                }
 
-            { pendingGames.length > 0 &&
-              <>
-                <h4>Games not started</h4>
-                { pendingGames }
-              </>
-            }
-
+                { pendingGames.length > 0 &&
+                  <>
+                    <h4 className={css.gamesNotStarted}>Games not started</h4>
+                    { pendingGames }
+                  </>
+                }
+            </div>
         </div>);
     }
 
     function getGameLink(game) {
         return (<div key={game.id} className={css.gameLink}>
-            <Link to={`/game/${game.id}`}>
-              { game.id }
+            <Link className={css.linkBody} to={`/game/${game.id}`}>
+              <p>Game ID: <span className={css.gameVal}>{game.id}</span></p>
+              <div className={css.ctaZone}><div className={css.innerButton}>Play</div></div>
             </Link>
         </div>);
     }
@@ -99,20 +101,22 @@ const Multiplayer = (
     return (
       <>
       <div className={css.multiplayer}>
-        <h3>New Game</h3>
-        <span
-          className={css.button}
-          onClick={createGameTypeToggle(MULTIPLAYER_GAME)}
-        >
-          Play against your friends
-        </span>
-        <span>OR</span>
-        <span
-          className={css.button}
-          onClick={createGameTypeToggle(SINGLEPLAYER_GAME)}
-        >
-          Play against the computer
-        </span>
+        <h3>Start a New Game</h3>
+        <div className={css.ctaZone}>
+            <div
+              className={css.majorButton}
+              onClick={createGameTypeToggle(MULTIPLAYER_GAME)}
+            >
+                <p>Play against your friends!</p>
+              <div className={css.innerButton}>Play</div>
+            </div>
+            <div
+              className={css.minorButton}
+              onClick={createGameTypeToggle(SINGLEPLAYER_GAME)}
+            >
+              Play against the computer
+            </div>
+        </div>
       </div>
 
       { gameType && 
