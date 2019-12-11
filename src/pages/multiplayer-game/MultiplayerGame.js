@@ -1,6 +1,7 @@
 import { LOAD_GAME, JOIN_GAME, DEAL_GAME } from "../../actions/game";
 import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
+import { beginLogin } from '../../actions/auth.js';
 import React, { useState, useEffect } from 'react';
 
 const POLL_RATE = 5000;
@@ -11,6 +12,8 @@ const MultiplayerGame = ({
     gameInfo,
     joinGame,
     dealGame,
+    loggedIn,
+    onLogin
 }) => {
     const [clickedJoinButton, setClickedJoinButton] = useState(false);
     const [clickedDealButton, setClickedDealButton] = useState(false);
@@ -64,6 +67,15 @@ const MultiplayerGame = ({
     }
 
     function getMainSection() {
+        if(!loggedIn) {
+            return (
+                <>
+                  <p>You're not logged in!</p>
+                  <p><button onClick={onLogin}>Log in to play.</button></p>
+                </>
+            );
+        }
+
         if(gameInfo.status === "Pending") {
             return (
                 <>
@@ -84,7 +96,8 @@ const MultiplayerGame = ({
 };
 
 const mapStateToProps = state => ({
-    gameInfo: state.selectedGame
+    gameInfo: state.selectedGame,
+    loggedIn: state.auth.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -97,6 +110,7 @@ const mapDispatchToProps = dispatch => ({
   dealGame: (id) => {
     dispatch({ type: DEAL_GAME, id })
   },
+  onLogin: () => dispatch(beginLogin)
 });
 
 export default connect(

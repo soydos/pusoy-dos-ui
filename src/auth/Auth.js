@@ -4,16 +4,22 @@ import { login } from '../actions/auth.js';
 export default class Auth {
 
   constructor (dispatch, ajax) {
+      const redirectUri = `${window.location.origin}/login`;
+      const currentUri = window.location.toString().split('#')[0];
       this.auth0 = new auth0.WebAuth({
         domain: 'soydos.eu.auth0.com',
         clientID: window.clientId,
-        redirectUri: `${window.location.origin}/login`,
+        redirectUri,
         responseType: 'token id_token',
         scope: 'openid profile email'
       });
 
       this.dispatch = dispatch;
       this.ajax = ajax;
+
+      if(currentUri !== redirectUri){
+          localStorage.setItem('pd-redirect', currentUri);
+      }
   }
 
   login() {
@@ -29,7 +35,6 @@ export default class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
       } else if (err) {
-        console.log(err);
         this.logout();
       }
     });
@@ -45,7 +50,6 @@ export default class Auth {
 
   setSession(authResult) {
     // Set the time that the access token will expire at
-    console.log(authResult);
     let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
@@ -60,7 +64,6 @@ export default class Auth {
          this.setSession(authResult);
        } else if (err) {
          this.logout();
-         console.log(err);
        }
     });
   }

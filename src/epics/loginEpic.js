@@ -42,9 +42,11 @@ export default (auth) => {
         return from(auth.redeemToken(action.accessToken)).pipe(
           tap(ev => {
             if(window.location.pathname === "/login"){
-                window.location = '/';
+                const nextUri = localStorage.getItem('pd-redirect') || '/';
+                window.location.replace(nextUri);
             }
           }),
+          map(ev => (emptyAction)),
           catchError(error => of({
             type: LOGOUT_ACTION,
           }))
