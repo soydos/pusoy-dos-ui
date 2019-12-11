@@ -71,7 +71,9 @@ export default class Auth {
     this.idToken = null;
     this.expiresAt = 0;
 
-    this.auth0.logout();
+    this.ajax.post('/logout').then(() => {
+        this.auth0.logout();
+    });
   }
 
   isAuthenticated() {
