@@ -5,6 +5,8 @@ import { beginLogin } from '../../actions/auth.js';
 
 import { Link } from "react-router-dom";
 
+import logo from "../../../assets/images/logo-landscape.svg";
+
 import css from './NewGame.sass';
 
 const NewGame = ({deal, onLogin, loggedIn}) => {
@@ -46,25 +48,29 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
 
   return (
     <div>
-    { loggedIn ? null :
+    <p className={css.logo}><img src={logo}/></p>
+    <p className={css.tagline}>The Pu is silent</p>
+    <div className={css.loginCta}>
+      <button onClick={onLogin}>
+          Login to play with your friends
+      </button>
+    </div>
+
     <p className={css.intro}>
         Pusoy Dos is an addictive card game for 2 or more players
         where the aim is to be the first player to get rid of all 
         of your cards.
-    </p> }
-    <p className={css.intro}>
-        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against 
-        { loggedIn ? <span> your friends or </span> : null }
-        the computer.
-        <br/>
-          <span className={css.howtoplay}>
-            <Link 
-              to="/about"
-            >
-              Learn how to play.
-            </Link>
-          </span>
+        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against the computer.
 
+    </p>
+    <p className={css.secondaryCta}>
+      <span className={css.howtoplay}>
+        <Link 
+          to="/about"
+        >
+          Learn how to play
+        </Link>
+      </span>
     </p>
     <div className={css.newGame}>
         <h5>New Game</h5>
@@ -138,12 +144,6 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
 
 
     </div>
-    { loggedIn ? null : 
-      (<div className={css.loginCta}>
-        <button onClick={onLogin}>
-            Login to play with your friends
-        </button>
-      </div>) }
 
     </div>
   )

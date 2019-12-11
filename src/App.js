@@ -2,7 +2,8 @@ import React from "react";
 import {
     Router,
     Route,
-    Link 
+    Link,
+    Switch
 } from "react-router-dom";
 
 
@@ -77,19 +78,20 @@ const App = () => {
                 The Pu is silent
             </span>
         </header>
-        <Route path="/" component={FrontPage} exact />
-        <Route path="/game/:id" component={MultiplayerGame} />
-        <Route path="/game/" component={GamePage} exact />
-        <Route path="/about/" component={About} />
-        <Route path="/privacy/" component={Privacy} />
-        <Route path="/feedback/" component={Feedback} />
-        <Route
-            path="/feedback-success/"
-            component={FeedbackSuccess}
-        />
+        <Switch>
+            <Route path="/" component={FrontPage} exact />
+            <Route path="/game/:id" component={MultiplayerGame} />
+            <Route path="/game/" component={GamePage} exact />
+            <Route path="/about/" component={About} />
+            <Route path="/privacy/" component={Privacy} />
+            <Route path="/feedback/" component={Feedback} />
+            <Route
+                path="/feedback-success/"
+                component={FeedbackSuccess}
+            />
 
-        <Route path="/login/" component={Login} />
-
+            <Route path="/login/" component={Login} />
+        </Switch>
 
       <footer>
         <span className={css.copyright}>

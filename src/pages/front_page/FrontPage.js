@@ -6,6 +6,7 @@ import NewGame from "../../components/new_game/NewGame";
 import Multiplayer from "../multiplayer/Multiplayer";
 import { beginGame } from "../../actions/game";
 
+
 const FrontPage = ({ loggedIn, onNewGame }) => {
     return loggedIn ? 
         <Multiplayer /> :
