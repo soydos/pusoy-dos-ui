@@ -8,10 +8,10 @@ const Account = ({loggedIn, onLogout, onLogin}) => {
 
     return loggedIn ?
       <span className={css.buttonWrapper}>
-        <button onClick={onLogout}>log out</button>
+        <button onClick={onLogout}>Log out</button>
       </span> :
       <span className={css.buttonWrapper}>
-        <button onClick={onLogin}>log in</button>
+        <button onClick={onLogin}>Log in</button>
       </span>;
 };
 
