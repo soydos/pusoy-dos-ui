@@ -3,6 +3,8 @@ import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
 import { beginLogin } from '../../actions/auth.js';
 import React, { useState, useEffect } from 'react';
+import css from './MultiplayerGame.sass';
+import aceOfSpades from '../../../assets/images/cards/card-spades-a.svg';
 
 const POLL_RATE = 5000;
 
@@ -13,6 +15,7 @@ const MultiplayerGame = ({
     joinGame,
     dealGame,
     loggedIn,
+    userId,
     onLogin
 }) => {
     const [clickedJoinButton, setClickedJoinButton] = useState(false);
@@ -38,11 +41,18 @@ const MultiplayerGame = ({
     function getPlayerList() {
         if(gameInfo && gameInfo.users) {
 
-            let users = gameInfo.users.map(user => (
-                <li key={user.sub}>{ user.name }</li>
-            ));
+            let users = gameInfo.users.map(user => {
+                const currentUser = user.sub === userId;
+                const className = `${css.user} ${currentUser?css.current:''}`;
+                return (
+                <li className={className} key={user.sub}>
+                    <img width="75" src={user.picture} />
+                    <span className={css.name}>{user.name}</span>
+                </li>
+                );
+            });
             return (<div>
-                <h4>Players</h4>
+                <h4 className={css.header}>Players</h4>
                 <ul>
                     { users }
                 </ul>
@@ -51,8 +61,21 @@ const MultiplayerGame = ({
     }
 
     function getDealButton() {
-        if(gameInfo && gameInfo.created && gameInfo.users.length > 1 && !clickedDealButton){
-            return (<button onClick={onDealGame}>Deal</button>);
+        if(gameInfo && gameInfo.created) {
+            if(gameInfo.users.length < 2) {
+              return (<h4 className={css.waiting}>
+                Waiting for players to join
+              </h4>);
+
+            }
+
+            if(gameInfo.users.length > 1 && !clickedDealButton){
+                return (<button onClick={onDealGame}>Deal</button>);
+            }
+        } else {
+            return (<h4 className={css.waiting}>
+                Waiting for game to begin
+            </h4>);
         }
     }
 
@@ -64,6 +87,36 @@ const MultiplayerGame = ({
     function onDealGame() {
         setClickedDealButton(true);
         dealGame(match.params.id);
+    }
+
+    function getSharingComponent() {
+        const url = `https:/\/soydos.test/game${match.params.id}`
+        const message = `Please join my game of pusoy dos! ${url}`;
+        const encodedMessage = encodeURIComponent(message);
+        return (
+            <div className={css.invite}>
+                <h4>Invite Your Friends</h4>
+                <div className={css.icons}>
+                    <span className={css.sharingLink}>
+                      <input readOnly value={url} />
+                    </span>
+                    <a 
+                        className={css.sharingWhatsapp}
+                        target="_blank"
+                        href={`https:/\/wa.me\/?text=${encodedMessage}`}
+                    >
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
+    function getGameInfo() {
+        return (<>
+            <p>Game Type: <span>{gameInfo.ruleset}</span></p>
+            <p>Decks: <span>{gameInfo.decks}</span></p>
+            <p>Jokers: <span>{gameInfo.jokers}</span></p>
+        </>);
     }
 
     function getMainSection() {
@@ -79,10 +132,15 @@ const MultiplayerGame = ({
         if(gameInfo.status === "Pending") {
             return (
                 <>
-                    <h1>multiplayer game {match.params.id}</h1>
+                    { /*<div className={css.decorativeCard}>
+                        <img className={css.decorativeCard}
+                         width="120" src={aceOfSpades}/>
+                    </div> */ }
+                    { getSharingComponent() }
+                    { getGameInfo() }
+                    { getDealButton() }
                     { getJoinButton() }
                     { getPlayerList() }
-                    { getDealButton() }
                 </>
             );
         } else if(gameInfo.status === "Active") {
@@ -98,6 +156,7 @@ const MultiplayerGame = ({
 const mapStateToProps = state => ({
     gameInfo: state.selectedGame,
     loggedIn: state.auth.loggedIn,
+    userId: state.auth.user && state.auth.user.sub
 });
 
 const mapDispatchToProps = dispatch => ({

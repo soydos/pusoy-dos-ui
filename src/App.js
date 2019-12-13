@@ -6,7 +6,6 @@ import {
     Switch
 } from "react-router-dom";
 
-
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';

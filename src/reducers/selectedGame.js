@@ -12,6 +12,9 @@ export default function (state = {}, action) {
         cards: action.data.hand,
         lastMove: action.data.last_move,
         nextPlayer: action.data.next_player,
+        ruleset: action.data.ruleset,
+        decks: action.data.decks,
+        jokers: action.data.jokers
       };
     default:
       return state
