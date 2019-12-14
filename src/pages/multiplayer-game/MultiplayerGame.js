@@ -73,7 +73,9 @@ const MultiplayerGame = ({
             }
 
             if(gameInfo.users.length > 1 && !clickedDealButton){
-                return (<button onClick={onDealGame}>Deal</button>);
+                return (<button 
+                    className={css.dealButton}
+                    onClick={onDealGame}>Deal</button>);
             }
         } else {
             return (<h4 className={css.waiting}>
