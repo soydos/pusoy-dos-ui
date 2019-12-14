@@ -34,7 +34,10 @@ const MultiplayerGame = ({
 
     function getJoinButton() {
         if(gameInfo && !gameInfo.inGame && !clickedJoinButton){
-            return (<button onClick={onJoinGame}>Join</button>);
+            return (<button className={css.joinButton}
+                        onClick={onJoinGame}>
+                        Accept invitation
+                    </button>);
         }
     }
 
@@ -111,6 +114,16 @@ const MultiplayerGame = ({
         );
     }
 
+    function getInvitationComponent() {
+        return (
+            <div className={css.invite}>
+                <h4>You've been invited to play Pusoy Dos</h4>
+                { getJoinButton() }
+            </div>
+        );
+    }
+
+
     function getGameInfo() {
         return (<>
             <p>Game Type: <span>{gameInfo.ruleset}</span></p>
@@ -136,10 +149,11 @@ const MultiplayerGame = ({
                         <img className={css.decorativeCard}
                          width="120" src={aceOfSpades}/>
                     </div> */ }
-                    { getSharingComponent() }
+                    { gameInfo.inGame ? 
+                        getSharingComponent() :
+                        getInvitationComponent() }
                     { getGameInfo() }
                     { getDealButton() }
-                    { getJoinButton() }
                     { getPlayerList() }
                 </>
             );
