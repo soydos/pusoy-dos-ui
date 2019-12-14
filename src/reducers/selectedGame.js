@@ -14,7 +14,8 @@ export default function (state = {}, action) {
         nextPlayer: action.data.next_player,
         ruleset: action.data.ruleset,
         decks: action.data.decks,
-        jokers: action.data.jokers
+        jokers: action.data.jokers,
+        winners: action.data.winners, // todo - map with users
       };
     default:
       return state

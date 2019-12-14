@@ -13,12 +13,11 @@ import css from './Game.sass';
 
 /*
     todo:
-    - suit order
-    - opposition card layout
     - winning
+    - suit order
+    - card layout (including less than or more than 3 opponents)
     - move assist
     - validate on select
-    - who's in the game?
 */
 const Game = ({
     gameId,
@@ -31,16 +30,10 @@ const Game = ({
     currentPlayer,
     nextP,
     submitMove,
+    winnersList,
 }) => {
   // Just hardcode for now
   const overlap = 30;
-  const players = [
-    'player',
-    'cpu1',
-    'cpu2',
-    'cpu3',
-  ];
-
 
   // State
   const [ playerCards, setPlayerCards ] = useState(assignCardIds(cards));
@@ -63,6 +56,10 @@ const Game = ({
     setCardWidth(width);
     setLastMove(lastPlayedMove);
     setNextPlayer(nextP);
+    setWinners(winnersList);
+    if(!nextP) {
+        setGameOver(true);
+    }
   });
 
   // Load WASM library
@@ -92,6 +89,7 @@ const Game = ({
   }
 
   function cpuUpdate() {
+    return;
     return new Promise((resolve) => {
         if(wasm && game && nextPlayer !== players[0]){
             setTimeout(() => {
@@ -180,10 +178,22 @@ const Game = ({
   }
 
   function displayWinners(){
-    const leaderboard = winners.slice();
-    
-    const losers = players
-        .filter(id => !winners.includes(id));
+    const leaderboard = winners.slice()
+        .map(id => {
+            let userName = 'Unknown user';
+            users.forEach(user => {
+                if(id == user.sub) {
+                    userName = user.name;
+                }
+            });
+
+            return userName;
+        });
+
+    const losers = users.slice()
+        .filter(user => !winners.includes(user.sub))
+        .map(user => user.name)
+
 
     return leaderboard.concat(losers).map((id, index) => {
        const cards = getPlayerCards(id).map((card, index) => {
@@ -245,7 +255,7 @@ const Game = ({
   }
 
   function getPlayerCards(player) {
-    return wasm.get_player(game, player);
+    return []; //wasm.get_player(game, player);
   }
 
   function getHiddenCards(cardCount) {
@@ -387,12 +397,12 @@ const Game = ({
         <ol>
           { displayWinners() }
         </ol>
-        <button
+        { /* <button
           className={css.button_calltoaction}
           onClick={onNewGame}
         >
           New Game
-        </button>
+        </button> */ }
       </div>
     )
   );
@@ -407,10 +417,11 @@ Game.propTypes = {
   ruleset: PropTypes.string.isRequired,
   cards: PropTypes.array,
   users: PropTypes.array,
-  lastPlayedMove: PropTypes.array,
+  lastPlayedMove: PropTypes.object,
   currentPlayer: PropTypes.string,
   nextP: PropTypes.string,
-  submitMove: PropTypes.func
+  submitMove: PropTypes.func,
+  winnersList: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
@@ -422,6 +433,7 @@ const mapStateToProps = state => ({
   lastPlayedMove: state.selectedGame.lastMove,
   currentPlayer: state.auth.user.sub,
   nextP: state.selectedGame.nextPlayer,
+  winnersList: state.selectedGame.winners,
 });
 
 const mapDispatchToProps = dispatch => ({
