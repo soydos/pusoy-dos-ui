@@ -11,6 +11,15 @@ import { SUBMIT_MOVE } from '../../actions/game';
 
 import css from './Game.sass';
 
+/*
+    todo:
+    - suit order
+    - opposition card layout
+    - winning
+    - move assist
+    - validate on select
+    - who's in the game?
+*/
 const Game = ({
     gameId,
     cards,
@@ -319,11 +328,17 @@ const Game = ({
   }
 
   function displayOpponents() {
-    return users.filter((_, index) => index > 0)
+    return users.filter((user, index) => {
+            return user.sub !== currentPlayer
+        })
         .map((user, index) => {
             return (
                 <div key={index} id={css[`cpu${index + 1}`]} className={nextPlayer === user.sub ? css.turn : undefined}>
-                  <Opponent cards={getHiddenCards(user.card_count)} vertical={true} />
+                  <Opponent 
+                    cards={getHiddenCards(user.card_count)}
+                    vertical={true} 
+                  />
+                  <h4 className={css.userName}>{user.name}</h4>
                 </div>
             )
         });
