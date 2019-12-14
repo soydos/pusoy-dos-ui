@@ -93,7 +93,7 @@ const MultiplayerGame = ({
     }
 
     function getSharingComponent() {
-        const url = `https:/\/soydos.test/game${match.params.id}`
+        const url = window.location.toString();
         const message = `Please join my game of pusoy dos! ${url}`;
         const encodedMessage = encodeURIComponent(message);
         return (
