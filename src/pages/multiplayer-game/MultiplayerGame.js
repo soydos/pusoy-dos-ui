@@ -3,6 +3,7 @@ import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
 import { beginLogin } from '../../actions/auth.js';
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import css from './MultiplayerGame.sass';
 import aceOfSpades from '../../../assets/images/cards/card-spades-a.svg';
 
@@ -164,8 +165,24 @@ const MultiplayerGame = ({
         }
     }
 
+    function getErrorPage() {
+        return (
+            <div>
+              <h3>Game not found!</h3>
+              <p className={css.textCenter}>
+                If there is a game here,
+                it may have already started
+              </p>
+
+              <Link to="/" className={css.secondaryButton}>
+                Return to homepage
+              </Link>
+            </div>
+        );
+    }
+
     return (<div>
-        { getMainSection() }
+        { gameInfo.gameLoaded ? getMainSection() : getErrorPage() }
     </div>);
 };
 

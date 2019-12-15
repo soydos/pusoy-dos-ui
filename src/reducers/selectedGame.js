@@ -1,10 +1,11 @@
 import { GAME_LOADED } from '../actions/game';
 
-export default function (state = {}, action) {
+export default function (state = {gameLoaded:false}, action) {
   switch (action.type) {
     case GAME_LOADED:
       return {
         ...state,
+        gameLoaded: true,
         created: action.data.created_user,
         inGame: action.data.in_game,
         users: action.data.users,
