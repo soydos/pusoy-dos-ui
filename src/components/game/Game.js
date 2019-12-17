@@ -13,8 +13,6 @@ import css from './Game.sass';
 
 /*
     todo:
-    - winning
-    - suit order
     - card layout (including less than or more than 3 opponents)
     - move assist
     - validate on select
@@ -31,6 +29,7 @@ const Game = ({
     nextP,
     submitMove,
     winnersList,
+    suits,
 }) => {
   // Just hardcode for now
   const overlap = 30;
@@ -49,7 +48,7 @@ const Game = ({
   const [ handLabel, setHandLabel ] = useState('Pass');
   const [ showTips, setShowTips ] = useState(null);
   const [ cardWidth, setCardWidth ] = useState(0);
-  const [ suitOrder, setSuitOrder ] = useState([]);
+  const [ suitOrder, setSuitOrder ] = useState(suits);
 
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
@@ -57,6 +56,7 @@ const Game = ({
     setLastMove(lastPlayedMove);
     setNextPlayer(nextP);
     setWinners(winnersList);
+    setSuitOrder(suits);
     if(!nextP) {
         setGameOver(true);
     }
@@ -112,7 +112,6 @@ const Game = ({
 
                 setLastMove(wasm.get_last_move(game));
                 setNextPlayer(wasm.get_next_player(game));
-                updateSuitOrder();
                 
                 resolve();
             }, 2000);
@@ -147,15 +146,6 @@ const Game = ({
     updateSuitOrder();
   }
 */
-
-  function updateSuitOrder() {
-    if(!wasm || !game) {
-        return
-    }
-
-    const suits = wasm.get_suit_order(game);
-    setSuitOrder(suits);
-  }
 
   function onNewGame() {
     setGame(null);
@@ -319,8 +309,11 @@ const Game = ({
       return (<li className={`${css.suit} ${css[suit]}`} key={suit}
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });
-
-    if(ruleset === 'pickering' && suitOrder.length > 0) {
+    
+    console.log(suits);
+    console.log(ruleset);
+    if(ruleset === 'Pickering' && suitOrder.length > 0) {
+        console.log(suits);
         return (<ul className={css.suitList}>
             { suits }
         </ul>);
@@ -422,6 +415,7 @@ Game.propTypes = {
   nextP: PropTypes.string,
   submitMove: PropTypes.func,
   winnersList: PropTypes.array,
+  suits: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
@@ -434,6 +428,7 @@ const mapStateToProps = state => ({
   currentPlayer: state.auth.user.sub,
   nextP: state.selectedGame.nextPlayer,
   winnersList: state.selectedGame.winners,
+  suits: state.selectedGame.suitOrder,
 });
 
 const mapDispatchToProps = dispatch => ({
