@@ -5,26 +5,32 @@ import { beginLogin } from '../../actions/auth.js';
 
 import { Link } from "react-router-dom";
 
-import logo from "../../../assets/images/logo-landscape.svg";
+import css from './NewGameModal.sass';
 
-import css from './NewGame.sass';
-
-const NewGame = ({deal, onLogin, loggedIn}) => {
+const NewGameModal = ({
+  deal,
+  close,
+  onLogin,
+  loggedIn,
+  title,
+  cta
+}) => {
 
   const DEFAULT_JOKERS = 2;
   const DEFAULT_DECKS = 1;
   const DEFAULT_RULESET = 'pickering';
 
+  const [ disableButton, setDisableButton] = useState(false);
   const [ decks, setDecks ] = useState(DEFAULT_DECKS);
   const [ jokers, setJokers] = useState(DEFAULT_JOKERS);
   const [ ruleset, setRuleset] = useState(DEFAULT_RULESET);
 
   function updateJokers(ev) {
-    setJokers(parseInt(ev.target.value, 10));
+    setJokers(ev.target.value);
   }
 
   function updateDecks(ev) {
-    setDecks(parseInt(ev.target.value, 10));
+    setDecks(ev.target.value);
   }
 
   function getToggleClassName(item, selected) {
@@ -38,42 +44,18 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
   }
 
   function onClick() {
+    setDisableButton(true);
     let j = ruleset == 'pickering' ? jokers : 0;
     deal(decks, j, ruleset);
   }
 
-  function getCallToAction() {
-    return 'Deal';
-  }
-
   return (
-    <div>
-    <p className={css.logo}><img src={logo}/></p>
-    <p className={css.tagline}>The Pu is silent</p>
-    <div className={css.loginCta}>
-      <button onClick={onLogin}>
-          Login to play with your friends
-      </button>
-    </div>
-
-    <p className={css.intro}>
-        Pusoy Dos is an addictive card game for 2 or more players
-        where the aim is to be the first player to get rid of all 
-        of your cards.
-        Play <strong>Pickering Rules</strong> or <strong>Classic</strong> Pusoy Dos against the computer.
-
-    </p>
-    <p className={css.secondaryCta}>
-      <span className={css.howtoplay}>
-        <Link 
-          to="/about"
-        >
-          Learn how to play
-        </Link>
-      </span>
-    </p>
     <div className={css.newGame}>
-        <h5>New Game</h5>
+        <div>
+        <h5>
+          { title }
+          <span className={css.close} onClick={close}>x</span>
+        </h5>
         <div className={`${css.body} ${css[ruleset]}`}>
             <p className={css.field}>
                 Players:
@@ -135,34 +117,27 @@ const NewGame = ({deal, onLogin, loggedIn}) => {
             <div className={css.clearfix}></div>
             <hr/>
             <button
+                disabled={disableButton}
                 className={css.button_calltoaction}
                 onClick={onClick}
             >
-            { getCallToAction() }
+            { cta }
             </button>
         </div>
-
-
     </div>
-
     </div>
   )
 };
 
-NewGame.propTypes = {
-    deal: PropTypes.func.isRequired,
-    loggedIn: PropTypes.bool.isRequired
+NewGameModal.propTypes = {
+    deal: PropTypes.func.isRequired
 };
-
-const mapStateToProps = state => ({
-    loggedIn: state.auth.loggedIn
-});
 
 const mapDispatchToProps = dispatch => ({
   onLogin: () => dispatch(beginLogin)
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
-)(NewGame);
+)(NewGameModal);

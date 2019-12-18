@@ -32,7 +32,9 @@ const Opponent = ({ cards, vertical }) => {
       {
         cards.map(index => {
           const position = vertical
-            ? {top: (index * cardOverlap.vertical) + 'px'}
+            ? { top: (index * cardOverlap.vertical) + 'px',
+                transform: 'rotateZ(90deg)'
+              }
             : {left: (index * cardOverlap.horizontal) + 'px'};
 
           return (

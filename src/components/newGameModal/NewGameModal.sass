@@ -4,6 +4,7 @@
   background-color: #FFF
   border-radius: 8px
   color: #801D40
+  position: relative
   h5
     background-color: #FF3B5C
     padding: 12px 24px
@@ -61,10 +62,27 @@
     border-radius: 18px
     color: #FFF
     font-size: 16px
+    outline: none
+    &:active
+      outline: none
+    &:disabled
+      background-color: #CCC
+      color: #E2E2E2
+      opacity: 0.7
   .fieldValue
     float: right
   .clearfix
     clear: both
+  .howtoplay
+    width: 100%
+    text-align: center
+    display: inline-block
+  .close
+    cursor: pointer
+    position: absolute
+    top: 0
+    right: 0
+    padding: 10px
 
 .intro
   max-width: 500px
@@ -72,31 +90,3 @@
 
 .loginCta
   text-align: center
-  margin: 36px
-  button
-    background-color: #7376FF
-    color: #FFF
-    border: 0
-    padding: 10px 40px
-    border-radius: 20px
-
-.secondaryCta
-  text-align: center
-  margin: 36px
-  .howtoplay
-    border: 1px solid #EEE
-    border-radius: 20px
-    padding: 4px 20px
-    & > a
-      text-decoration: none
-
-
-.logo
-  text-align: center
-
-.tagline
-  text-align: center
-  color: #FF3B5C
-  font-size: 28px
-  margin: 10px 0
-

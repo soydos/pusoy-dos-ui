@@ -6,26 +6,39 @@ import Player from '../../components/player/Player';
 import Opponent from '../../components/opponent/Opponent';
 import Card from '../../components/card/Card';
 import SuggestedMove from '../../components/suggested_move/SuggestedMove';
+import { getHandDescription } from '../../game_utils';
+import { SUBMIT_MOVE } from '../../actions/game';
 
 import css from './Game.sass';
 
-const Game = ({ decks, jokers, ruleset }) => {
+/*
+    todo:
+    - card layout (including less than or more than 3 opponents)
+*/
+const Game = ({
+    gameId,
+    cards,
+    users,
+    decks,
+    jokers,
+    ruleset,
+    lastPlayedMove,
+    currentPlayer,
+    nextP,
+    submitMove,
+    winnersList,
+    suits,
+    ranks,
+}) => {
   // Just hardcode for now
   const overlap = 30;
-  const players = [
-    'player',
-    'cpu1',
-    'cpu2',
-    'cpu3',
-  ];
-
 
   // State
-  const [ playerCards, setPlayerCards ] = useState([]);
+  const [ playerCards, setPlayerCards ] = useState(assignCardIds(cards));
   const [ wasm, setWasm ] = useState(null);
   const [ game, setGame ] = useState(null);
-  const [ lastMove, setLastMove ] = useState(null);
-  const [ nextPlayer, setNextPlayer ] = useState([]);
+  const [ lastMove, setLastMove ] = useState(lastPlayedMove);
+  const [ nextPlayer, setNextPlayer ] = useState(nextP);
 
   const [ winners, setWinners ] = useState([]);
   const [ validMove, setValidMove ] = useState(null);
@@ -34,11 +47,19 @@ const Game = ({ decks, jokers, ruleset }) => {
   const [ handLabel, setHandLabel ] = useState('Pass');
   const [ showTips, setShowTips ] = useState(null);
   const [ cardWidth, setCardWidth ] = useState(0);
-  const [ suitOrder, setSuitOrder ] = useState([]);
+  const [ suitOrder, setSuitOrder ] = useState(suits);
+  const [ rankOrder, setRankOrder ] = useState(ranks);
 
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
     setCardWidth(width);
+    setLastMove(lastPlayedMove);
+    setNextPlayer(nextP);
+    setWinners(winnersList);
+    setSuitOrder(suits);
+    if(!nextP) {
+        setGameOver(true);
+    }
   });
 
   // Load WASM library
@@ -55,7 +76,7 @@ const Game = ({ decks, jokers, ruleset }) => {
       {type: "Invalid Hand"};
 
     setHandLabel(getHandDescription(move));
-    setValidMove( /* red|green|null */ getIsValidMove(selected))
+    setValidMove(getIsValidMove(selected)) // green|red|null
   }, [selected, wasm])
 
 
@@ -64,116 +85,20 @@ const Game = ({ decks, jokers, ruleset }) => {
         return null;
     }
 
-    return wasm.check_move(game, selected) ? 'green' : 'red';
+    return wasm.check_move_multiplayer(
+        lastMove,
+        selected,
+        ruleset.toLowerCase(),
+        rankOrder,
+        suitOrder,
+    ) ? 'green' : 'red';
   }
 
-  function getHandDescription(move) {
-    const type = move.type;
-    const hand = move.cards;
-
-    let joker = false;
-
-    switch (type) {
-      case 'single':
-        joker = hand.is_joker;
-        return `${hand.rank} of ${hand.suit}${joker ? ' (Joker)' : ''}`;
-        break;
-      case 'pair':
-      case 'prial':
-        joker = hand.some(card => card.is_joker);
-        return `${type} of ${hand[0].rank}${hand[0].rank === 'six' ? 'es' : 's'}${joker ? ' (Joker)' : ''}`;
-        break;
-      case 'fivecardtrick':
-        switch (hand.trick_type) {
-          case 'flush':
-            joker = hand.cards.some(card => card.is_joker);
-            return `${hand.cards[0].suit} flush${joker ? ' (Joker)' : ''}`;
-            break;
-          case 'fullhouse':
-            joker = hand.cards.some(card => card.is_joker);
-            return `Full House${joker ? ' (Joker)' : ''}`;
-            break;
-          case 'fourofakind':
-            joker = hand.cards.some(card => card.is_joker);
-            return `Four of a Kind${joker ? ' (Joker)' : ''}`;
-            break;
-          default:
-            joker = hand.cards.some(card => card.is_joker);
-            return `${type}${joker ? ' (Joker)' : ''}`;
-            break;
-        }
-        break;
-      default:
-        return type;
-    }
-  }
-
-  function cpuUpdate() {
-    return new Promise((resolve) => {
-        if(wasm && game && nextPlayer !== players[0]){
-            setTimeout(() => {
-
-                if(!nextPlayer) {
-                    // todo some winners table intermediate bit
-                    console.log('game over!');
-                    setGameOver(true);
-                    setLastMove(null);
-                    setNextPlayer(null);
-                    return resolve();
-                }
-
-                let cards = wasm.get_cpu_move(game);
-                let result = wasm.submit_move(game, nextPlayer, cards);
-
-                if(result !== true) {
-                    console.log(result);
-                }
-
-                setLastMove(wasm.get_last_move(game));
-                setNextPlayer(wasm.get_next_player(game));
-                updateSuitOrder();
-                
-                resolve();
-            }, 2000);
-        } else {
-            resolve();
-        }
-    });
-  }
 
   useEffect(() => {
     cpuUpdate()
     updateWinners()
   }, [nextPlayer, game, wasm])
-
-  // Functions/Callbacks
-  function setup() {
-    if(!wasm) { return }
-
-    setGameOver(false);
-    setLastMove(null);
-    setNextPlayer(null);
-    setWinners([]);
-
-    const game = wasm.create_game(players, decks, jokers, ruleset)
-    setGame(game);
-    const player = wasm.get_player(game, players[0]);
-    const playerCards = assignCardIds(player);
-    setPlayerCards(playerCards);
-
-    const nextPlayer = wasm.get_next_player(game);
-    setNextPlayer(nextPlayer);
-    updateSuitOrder();
-  }
-
-  function updateSuitOrder() {
-    if(!wasm || !game) {
-        return
-    }
-
-    const suits = wasm.get_suit_order(game);
-    setSuitOrder(suits);
-  }
 
   function onNewGame() {
     setGame(null);
@@ -196,10 +121,22 @@ const Game = ({ decks, jokers, ruleset }) => {
   }
 
   function displayWinners(){
-    const leaderboard = winners.slice();
-    
-    const losers = players
-        .filter(id => !winners.includes(id));
+    const leaderboard = winners.slice()
+        .map(id => {
+            let userName = 'Unknown user';
+            users.forEach(user => {
+                if(id == user.sub) {
+                    userName = user.name;
+                }
+            });
+
+            return userName;
+        });
+
+    const losers = users.slice()
+        .filter(user => !winners.includes(user.sub))
+        .map(user => user.name)
+
 
     return leaderboard.concat(losers).map((id, index) => {
        const cards = getPlayerCards(id).map((card, index) => {
@@ -227,7 +164,12 @@ const Game = ({ decks, jokers, ruleset }) => {
 
   function onHelp() {
     const lastMoveDescription = lastMove && getHandDescription(lastMove);
-    const suggestedMove = wasm.suggest_move(game, players[0]);
+    const suggestedMove = wasm.suggest_move_multiplayer(
+        lastMove,
+        playerCards,
+        suitOrder,
+        rankOrder,
+    );
 
     const move = lastMove || { type: false };
     const description = lastMoveDescription || false;
@@ -246,23 +188,26 @@ const Game = ({ decks, jokers, ruleset }) => {
   }
 
   function onSubmit() {
-    let result = wasm.submit_move(game, 'player', selected);
-    const playerCards = assignCardIds(getPlayerCards(players[0]));
-    setPlayerCards(playerCards);
-    setSelected([]);
+    // todo - wasm validation
+    submitMove(gameId, selected);
+    // temp remove cards for speed
+    selected.forEach(selectedCard => {
+        const i = cards.findIndex(card => (card.rank === selectedCard.rank && card.suit === selectedCard.suit))
+        cards.splice(i, 1);
+    });
 
-    setLastMove(wasm.get_last_move(game));
-    setNextPlayer(wasm.get_next_player(game));
-    updateSuitOrder(); 
+    setSelected([]);
+    setPlayerCards(assignCardIds(cards));
     setShowTips(null);
+    setNextPlayer(null);
   }
 
   function getPlayerCards(player) {
-    return wasm.get_player(game, player);
+    return []; //wasm.get_player(game, player);
   }
 
-  function getHiddenCards(player) {
-    return getPlayerCards(player).map((_, index) => index);
+  function getHiddenCards(cardCount) {
+    return [...Array(cardCount).keys()];
   }
 
   function displayLastMove() {
@@ -319,14 +264,17 @@ const Game = ({ decks, jokers, ruleset }) => {
       'clubs': '&clubs;'
     };
     const suits = suitOrder.slice().reverse().map((suit, index) => {
-      return (<li className={`${css.suit} ${css[suit]}`} key={suit}
+      return (<span className={`${css.suit} ${css[suit]}`} key={suit}
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });
-
-    if(ruleset === 'pickering' && suitOrder.length > 0) {
-        return (<ul className={css.suitList}>
+    
+    if(ruleset === 'Pickering' && suitOrder.length > 0) {
+        return (<div className={css.suitList}>
+            <span className={css.orderTitle}>Suit order:</span>
+            <span className={css.arrow}>↑</span>
             { suits }
-        </ul>);
+            <span className={css.arrow}>↓</span>
+        </div>);
     }
 
     return null;
@@ -340,24 +288,32 @@ const Game = ({ decks, jokers, ruleset }) => {
     </div>);
   }
 
+  function displayOpponents() {
+    return users.filter((user, index) => {
+            return user.sub !== currentPlayer
+        })
+        .map((user, index) => {
+            const vertical = index % 2 == 0;
+            return (
+                <div key={index} id={css[`cpu${index + 1}`]} className={nextPlayer === user.sub ? css.turn : undefined}>
+                  <Opponent 
+                    cards={getHiddenCards(user.card_count)}
+                    vertical={vertical} 
+                  />
+                  <h4 className={css.userName}>{user.name}</h4>
+                </div>
+            )
+        });
+  }
+
   // HTML
-  const table = wasm && game && (
+  const table = (
     <div className={css.game}>
       <div className={css.table}>
-        <div id={css.cpu1} className={nextPlayer === players[1] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[1])} vertical={true} />
-        </div>
-        <div id={css.cpu2} className={nextPlayer === players[2] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[2])} />
-        </div>
-        <div id={css.cpu3} className={nextPlayer === players[3] ? css.turn : undefined}>
-          <Opponent cards={getHiddenCards(players[3])} vertical={true} />
-        </div>
+        { displayOpponents() }
         { displayLastMove() }
-        <div>
-          { getSuitOrder() }
-        </div>
-        {nextPlayer === players[0] &&
+        { getSuitOrder() }
+        {nextPlayer === currentPlayer &&
             <div className={css.action}>
             {validMove !== 'red' ?
               <div className={css.action}>
@@ -379,9 +335,10 @@ const Game = ({ decks, jokers, ruleset }) => {
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
         </div>
-      <div className={css.showTips}>  
-      { showTips }
-      </div>
+
+        <div className={css.suggestedMove}>
+          { showTips }
+        </div>
       </div>
     </div>
   );
@@ -393,44 +350,56 @@ const Game = ({ decks, jokers, ruleset }) => {
         <ol>
           { displayWinners() }
         </ol>
-        <button
+        { /* <button
           className={css.button_calltoaction}
           onClick={onNewGame}
         >
           New Game
-        </button>
+        </button> */ }
       </div>
     )
   );
 
-  let page;
-  if(gameOver) {
-    page = gameSummary;
-  } else if (game) {
-    page = table;
-  } else {
-    setup()
-  }
-
-  return wasm && page ? (
-    page
-  ) : (
-    getFrontPage(<h1>Loading</h1>)
-  );
+  return gameOver ? gameSummary : table;
 }
 
 Game.propTypes = {
+  gameId: PropTypes.string.isRequired,
   decks: PropTypes.number.isRequired,
   jokers: PropTypes.number.isRequired,
-  ruleset: PropTypes.string.isRequired
+  ruleset: PropTypes.string.isRequired,
+  cards: PropTypes.array,
+  users: PropTypes.array,
+  lastPlayedMove: PropTypes.object,
+  currentPlayer: PropTypes.string,
+  nextP: PropTypes.string,
+  submitMove: PropTypes.func,
+  winnersList: PropTypes.array,
+  suits: PropTypes.array,
+  ranks: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
-  decks: state.game.decks || 1,
-  jokers: (typeof state.game.jokers !== "undefined" && state.game.jokers !== null) ? state.game.jokers : 2,
-  ruleset: state.game.ruleset || 'pickering',
+  decks: state.selectedGame.decks || 1,
+  jokers: state.selectedGame.jokers || 2,
+  ruleset: state.selectedGame.ruleset || 'pickering',
+  cards: state.selectedGame.cards,
+  users: state.selectedGame.users,
+  lastPlayedMove: state.selectedGame.lastMove,
+  currentPlayer: state.auth.user.sub,
+  nextP: state.selectedGame.nextPlayer,
+  winnersList: state.selectedGame.winners,
+  suits: state.selectedGame.suitOrder,
+  ranks: state.selectedGame.rankOrder,
+});
+
+const mapDispatchToProps = dispatch => ({
+    submitMove: (id, selected) => {
+        dispatch({ type: SUBMIT_MOVE, id, selected });
+    },
 });
 
 export default connect(
   mapStateToProps,
+  mapDispatchToProps,
 )(Game);

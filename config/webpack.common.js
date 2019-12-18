@@ -55,7 +55,9 @@ module.exports = {
         template: './assets/index.html',
         templateParameters: {
             ga: process.env.GA || 'xxxxxx-x',
-            commit_ref: process.env.COMMIT_REF || 'dev'
+            commit_ref: process.env.COMMIT_REF || 'dev',
+            client_id: process.env.CLIENT_ID || 'UqeR63lpa4C7S8lLiPvmrrtKkCPueztb',
+            api_root: process.env.API_ROOT || 'https://api.soydos.test',
         }
     }),
     new MiniCssExtractPlugin({
@@ -75,7 +77,8 @@ module.exports = {
   output: {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, '../', 'dist')
+    path: path.resolve(__dirname, '../', 'dist'),
+    publicPath: '/',
   },
 };
 
