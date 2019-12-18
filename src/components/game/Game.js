@@ -342,11 +342,12 @@ const Game = ({
             return user.sub !== currentPlayer
         })
         .map((user, index) => {
+            const vertical = index % 2 == 0;
             return (
                 <div key={index} id={css[`cpu${index + 1}`]} className={nextPlayer === user.sub ? css.turn : undefined}>
                   <Opponent 
                     cards={getHiddenCards(user.card_count)}
-                    vertical={true} 
+                    vertical={vertical} 
                   />
                   <h4 className={css.userName}>{user.name}</h4>
                 </div>
