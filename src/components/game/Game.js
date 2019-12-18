@@ -306,17 +306,17 @@ const Game = ({
       'clubs': '&clubs;'
     };
     const suits = suitOrder.slice().reverse().map((suit, index) => {
-      return (<li className={`${css.suit} ${css[suit]}`} key={suit}
+      return (<span className={`${css.suit} ${css[suit]}`} key={suit}
         dangerouslySetInnerHTML={{__html:suitMap[suit]}} />);
     });
     
-    console.log(suits);
-    console.log(ruleset);
     if(ruleset === 'Pickering' && suitOrder.length > 0) {
-        console.log(suits);
-        return (<ul className={css.suitList}>
+        return (<div className={css.suitList}>
+            <span className={css.orderTitle}>Suit order:</span>
+            <span className={css.arrow}>↑</span>
             { suits }
-        </ul>);
+            <span className={css.arrow}>↓</span>
+        </div>);
     }
 
     return null;
@@ -353,9 +353,7 @@ const Game = ({
       <div className={css.table}>
         { displayOpponents() }
         { displayLastMove() }
-        <div>
-          { getSuitOrder() }
-        </div>
+        { getSuitOrder() }
         {nextPlayer === currentPlayer &&
             <div className={css.action}>
             {validMove !== 'red' ?
