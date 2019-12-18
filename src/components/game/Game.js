@@ -14,8 +14,6 @@ import css from './Game.sass';
 /*
     todo:
     - card layout (including less than or more than 3 opponents)
-    - move assist
-    - validate on select
 */
 const Game = ({
     gameId,
@@ -78,7 +76,7 @@ const Game = ({
       {type: "Invalid Hand"};
 
     setHandLabel(getHandDescription(move));
-//    setValidMove(getIsValidMove(selected)) // green|red|null
+    setValidMove(getIsValidMove(selected)) // green|red|null
   }, [selected, wasm])
 
 
@@ -87,67 +85,20 @@ const Game = ({
         return null;
     }
 
-    return wasm.check_move(game, selected) ? 'green' : 'red';
+    return wasm.check_move_multiplayer(
+        lastMove,
+        selected,
+        ruleset.toLowerCase(),
+        rankOrder,
+        suitOrder,
+    ) ? 'green' : 'red';
   }
 
-  function cpuUpdate() {
-    return;
-    return new Promise((resolve) => {
-        if(wasm && game && nextPlayer !== players[0]){
-            setTimeout(() => {
-
-                if(!nextPlayer) {
-                    // todo some winners table intermediate bit
-                    console.log('game over!');
-                    setGameOver(true);
-                    setLastMove(null);
-                    setNextPlayer(null);
-                    return resolve();
-                }
-
-                let cards = wasm.get_cpu_move(game);
-                let result = wasm.submit_move(game, nextPlayer, cards);
-
-                if(result !== true) {
-                    console.log(result);
-                }
-
-                setLastMove(wasm.get_last_move(game));
-                setNextPlayer(wasm.get_next_player(game));
-                
-                resolve();
-            }, 2000);
-        } else {
-            resolve();
-        }
-    });
-  }
 
   useEffect(() => {
     cpuUpdate()
     updateWinners()
   }, [nextPlayer, game, wasm])
-
-  // Functions/Callbacks
-/*
-  function setup() {
-    if(!wasm) { return }
-
-    setGameOver(false);
-    setLastMove(null);
-    setNextPlayer(null);
-    setWinners([]);
-
-    const game = wasm.create_game(players, decks, jokers, ruleset)
-    setGame(game);
-    const playerCards = assignCardIds(cards);
-    setPlayerCards(playerCards);
-
-    const nextPlayer = wasm.get_next_player(game);
-    setNextPlayer(nextPlayer);
-    updateSuitOrder();
-  }
-*/
 
   function onNewGame() {
     setGame(null);
