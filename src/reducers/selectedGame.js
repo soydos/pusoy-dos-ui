@@ -18,6 +18,7 @@ export default function (state = {gameLoaded:false}, action) {
         jokers: action.data.jokers,
         winners: action.data.winners,
         suitOrder: action.data.suit_order,
+        rankOrder: action.data.rank_order,
     }
     default:
       return state;

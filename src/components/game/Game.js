@@ -30,6 +30,7 @@ const Game = ({
     submitMove,
     winnersList,
     suits,
+    ranks,
 }) => {
   // Just hardcode for now
   const overlap = 30;
@@ -49,6 +50,7 @@ const Game = ({
   const [ showTips, setShowTips ] = useState(null);
   const [ cardWidth, setCardWidth ] = useState(0);
   const [ suitOrder, setSuitOrder ] = useState(suits);
+  const [ rankOrder, setRankOrder ] = useState(ranks);
 
    useEffect(() => {
     const width = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'), 10);
@@ -211,7 +213,12 @@ const Game = ({
 
   function onHelp() {
     const lastMoveDescription = lastMove && getHandDescription(lastMove);
-    const suggestedMove = wasm.suggest_move(game, players[0]);
+    const suggestedMove = wasm.suggest_move_multiplayer(
+        lastMove,
+        playerCards,
+        suitOrder,
+        rankOrder,
+    );
 
     const move = lastMove || { type: false };
     const description = lastMoveDescription || false;
@@ -414,6 +421,7 @@ Game.propTypes = {
   submitMove: PropTypes.func,
   winnersList: PropTypes.array,
   suits: PropTypes.array,
+  ranks: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
@@ -427,6 +435,7 @@ const mapStateToProps = state => ({
   nextP: state.selectedGame.nextPlayer,
   winnersList: state.selectedGame.winners,
   suits: state.selectedGame.suitOrder,
+  ranks: state.selectedGame.rankOrder,
 });
 
 const mapDispatchToProps = dispatch => ({
