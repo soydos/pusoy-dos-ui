@@ -379,8 +379,10 @@ const Game = ({ decks, jokers, ruleset }) => {
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
         </div>
-      </div>
+      <div className={css.showTips}>  
       { showTips }
+      </div>
+      </div>
     </div>
   );
 

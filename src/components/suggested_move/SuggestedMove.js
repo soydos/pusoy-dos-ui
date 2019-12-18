@@ -43,17 +43,23 @@ const SuggestedMove = ({
     }
 
     return (<div className={css.suggestedMove}>
+        <h3 className={css.title}>Help</h3>
         <div className={css.close} onClick={close}>x</div>
-        { explanation }
-        <div>
-            <p><Link to="/about">See complete rules.</Link></p>
-        </div>
-        <div>
+        <div className={css.body}>
+          { explanation }
+          <div>
             Suggested Move:
             <div className={css.suggestedHand}>
             { getCards() }
             </div>
+          </div>
+          
         </div>
+        <div className={css.footer}>
+          <p><Link className={css.rules}
+                to="/about">See complete rules</Link></p>
+        </div>
+
     </div>);
 };
 

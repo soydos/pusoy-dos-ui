@@ -383,8 +383,11 @@ const Game = ({
         <div className={css.player}>
           <Player cards={playerCards} onSelect={setSelected} />
         </div>
+
+        <div className={css.suggestedMove}>
+          { showTips }
+        </div>
       </div>
-      { showTips }
     </div>
   );
 

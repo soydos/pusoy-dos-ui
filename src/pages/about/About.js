@@ -4,10 +4,18 @@ import { Link } from "react-router-dom";
 
 const About = () => {
 
+    function goBack(ev) {
+        window.history.back();
+        ev.preventDefault();
+    }
+
     return (
         <div>
             <h2>Pickering Rules Pusoy Dos</h2>
-            <Link to="/game">Back to game</Link>
+            <a href="#"
+                onClick={goBack}>
+                Back to game
+            </a>
 
             <div>
                 
