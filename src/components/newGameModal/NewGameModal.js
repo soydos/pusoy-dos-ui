@@ -50,8 +50,8 @@ const NewGameModal = ({
   }
 
   return (
-    <div>
-        <div className={css.newGame}>
+    <div className={css.newGame}>
+        <div>
         <h5>
           { title }
           <span className={css.close} onClick={close}>x</span>

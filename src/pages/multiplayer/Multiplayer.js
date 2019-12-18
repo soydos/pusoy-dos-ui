@@ -102,6 +102,7 @@ const Multiplayer = (
       <>
       <div className={css.multiplayer}>
         <h3>Start a New Game</h3>
+        { !gameType && 
         <div className={css.ctaZone}>
             <div
               className={css.majorButton}
@@ -116,8 +117,8 @@ const Multiplayer = (
             >
               Play against the computer
             </div>
-        </div>
-      </div>
+        </div> }
+      </div> 
 
       { gameType && 
         <NewGameModal
