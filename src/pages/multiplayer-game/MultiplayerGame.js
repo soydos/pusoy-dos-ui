@@ -182,7 +182,8 @@ const MultiplayerGame = ({
     }
 
     return (<div>
-        { gameInfo.gameLoaded ? getMainSection() : getErrorPage() }
+        { !loggedIn || gameInfo.gameLoaded
+            ? getMainSection() : getErrorPage() }
     </div>);
 };
 
