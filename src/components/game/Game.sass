@@ -8,7 +8,7 @@
   display: grid
   grid-template-areas: "cpu2 cpu2 cpu2" "cpu1 table cpu3" ".... action ...." "player player player"
   grid-template-rows: 10vw 1fr 75px 20vh
-  grid-template-columns: 20vw 1fr 20vw
+  grid-template-columns: 15vw 1fr 15vw
   height: 100%
   position: relative
   overflow: hidden
@@ -35,6 +35,9 @@
   grid-area: cpu3
   justify-self: start
   align-self: center
+  .userName
+    transform: rotateZ(-90deg) translateY(-100px) translateX(200px)
+
 
 .moves
   grid-area: table
