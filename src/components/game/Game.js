@@ -96,7 +96,6 @@ const Game = ({
 
 
   useEffect(() => {
-    cpuUpdate()
     updateWinners()
   }, [nextPlayer, game, wasm])
 
