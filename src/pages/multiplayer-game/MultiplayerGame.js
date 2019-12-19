@@ -160,7 +160,8 @@ const MultiplayerGame = ({
                     { getPlayerList() }
                 </>
             );
-        } else if(gameInfo.status === "Active") {
+        } else if(gameInfo.status === "Active"
+            || gameInfo.status === "Complete") {
             return <Game gameId={match.params.id} />
         }
     }
