@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { beginGame, createGame } from "../../actions/game";
 import { LOAD_CURRENT_GAMES } from "../../actions/user";
+import moment from 'moment';
+
 const MULTIPLAYER_GAME = 'multiplayer';
 const SINGLEPLAYER_GAME = 'computer';
 
@@ -84,9 +86,21 @@ const Multiplayer = (
     }
 
     function getGameLink(game) {
+        const formatString = game.created.replace(/\sUTC/, 'Z');
+        const created = moment(formatString).format('DD/MM/YY');
         return (<div key={game.id} className={css.gameLink}>
-            <Link className={css.linkBody} to={`/game/${game.id}`}>
+            <Link className={`${css.linkBody} ${css[game.status]}`}
+              to={`/game/${game.id}`}>
               <p>Game ID: <span className={css.gameVal}>{game.id}</span></p>
+              <p>Created on: <span className={css.gameVal}>
+                {created}
+                </span>
+              </p>
+              <p>Rules:
+                <span className={css.gameVal}>
+                  {game.ruleset}
+                </span>
+              </p>
               <div className={css.ctaZone}><div className={css.innerButton}>Play</div></div>
             </Link>
         </div>);
