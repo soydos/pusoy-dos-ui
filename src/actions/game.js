@@ -10,6 +10,7 @@ export const DEAL_COMPLETE = 'DEAL_COMPLETE';
 export const SUBMIT_MOVE = 'SUBMIT_MOVE';
 export const SUBMIT_SUCCESSFUL = 'SUBMIT_SUCCESSFUL';
 export const SUBMIT_ERROR = 'SUBMIT_ERROR';
+export const CLEAR_SELECTED_GAME = 'CLEAR_SELECTED_GAME';
 
 export const beginGame = (decks, jokers, ruleset) => ({
     type: BEGIN_GAME,

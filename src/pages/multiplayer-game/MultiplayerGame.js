@@ -1,4 +1,9 @@
-import { LOAD_GAME, JOIN_GAME, DEAL_GAME } from "../../actions/game";
+import {
+  LOAD_GAME,
+  JOIN_GAME, 
+  DEAL_GAME,
+  CLEAR_SELECTED_GAME,
+} from "../../actions/game";
 import Game from "../../components/game/Game";
 import { connect } from 'react-redux';
 import { beginLogin } from '../../actions/auth.js';
@@ -17,7 +22,8 @@ const MultiplayerGame = ({
     dealGame,
     loggedIn,
     userId,
-    onLogin
+    onLogin,
+    onClearSelectedGame
 }) => {
     const [clickedJoinButton, setClickedJoinButton] = useState(false);
     const [clickedDealButton, setClickedDealButton] = useState(false);
@@ -30,6 +36,7 @@ const MultiplayerGame = ({
 
         return ()=>{
             clearInterval(keepLoading);
+            onClearSelectedGame(); 
         };
     }, []);
 
@@ -204,7 +211,10 @@ const mapDispatchToProps = dispatch => ({
   dealGame: (id) => {
     dispatch({ type: DEAL_GAME, id })
   },
-  onLogin: () => dispatch(beginLogin)
+  onLogin: () => dispatch(beginLogin),
+  onClearSelectedGame: () => dispatch(
+    { type: CLEAR_SELECTED_GAME }
+  ),
 });
 
 export default connect(

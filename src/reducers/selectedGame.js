@@ -1,6 +1,13 @@
-import { GAME_LOADED } from '../actions/game';
+import {
+  GAME_LOADED,
+  CLEAR_SELECTED_GAME
+} from '../actions/game';
 
-export default function (state = {gameLoaded:false}, action) {
+const getDefault = () => ({
+  gameLoaded: false
+});
+
+export default function (state = getDefault(), action) {
   switch (action.type) {
     case GAME_LOADED:
       return {
@@ -19,7 +26,9 @@ export default function (state = {gameLoaded:false}, action) {
         winners: action.data.winners,
         suitOrder: action.data.suit_order,
         rankOrder: action.data.rank_order,
-    }
+    };
+    case CLEAR_SELECTED_GAME:
+      return getDefault();
     default:
       return state;
   }
