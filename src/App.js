@@ -11,7 +11,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
 import https from 'https';
 import axios from 'axios';
-import Account from "./components/account/Account";
+import PageHeader from "./components/pageHeader/PageHeader";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
 import GamePage from "./pages/game/Game";
@@ -68,15 +68,7 @@ const App = () => {
   return(
     <Provider store={store}>
       <Router history={history}>
-        <header>
-            <Link to="/" className={css.logo}>
-                <img src={logo}/>
-            </Link>
-            <Account />
-            <span className={css.tagline}>
-                The Pu is silent
-            </span>
-        </header>
+        <PageHeader />
         <Switch>
             <Route path="/" component={FrontPage} exact />
             <Route path="/game/:id" component={MultiplayerGame} />
