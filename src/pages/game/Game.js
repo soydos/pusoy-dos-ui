@@ -114,7 +114,6 @@ const Game = ({ decks, jokers, ruleset }) => {
             setTimeout(() => {
 
                 if(!nextPlayer) {
-                    // todo some winners table intermediate bit
                     console.log('game over!');
                     setGameOver(true);
                     setLastMove(null);

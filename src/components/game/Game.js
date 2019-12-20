@@ -187,9 +187,7 @@ const Game = ({
   }
 
   function onSubmit() {
-    // todo - wasm validation
     submitMove(gameId, selected);
-    // temp remove cards for speed
     selected.forEach(selectedCard => {
         const i = cards.findIndex(card => (card.rank === selectedCard.rank && card.suit === selectedCard.suit))
         cards.splice(i, 1);
