@@ -11,6 +11,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { createEpicMiddleware } from 'redux-observable';
 import https from 'https';
 import axios from 'axios';
+import moment from 'moment';
 import PageHeader from "./components/pageHeader/PageHeader";
 import FrontPage from "./pages/front_page/FrontPage";
 import About from "./pages/about/About";
@@ -30,6 +31,8 @@ import createGame from './game/Game';
 import { CHECK_AUTH } from './actions/auth';
 
 import reducers from './reducers/rootReducer';
+
+const YEAR = moment().format('YYYY');
 
 const epicMiddleware = createEpicMiddleware();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -86,7 +89,7 @@ const App = () => {
 
       <footer>
         <span className={css.copyright}>
-          &copy; 2019 soydos.com
+          &copy; {YEAR} soydos.com
         </span>
         <div className={css.links}>
 
@@ -95,7 +98,7 @@ const App = () => {
         </span>
 
         <span className={css.footerLink}>
-          <a href="https://github.com/soydos/pusoy-dos-ui">
+          <a href="https://github.com/soydos">
             Contribute
           </a>
         </span>
