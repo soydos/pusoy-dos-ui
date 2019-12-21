@@ -21,6 +21,7 @@ import Feedback from "./pages/feedback/Feedback";
 import FeedbackSuccess from "./pages/feedback/FeedbackSuccess";
 import Login from "./pages/login/Login";
 import MultiplayerGame from "./pages/multiplayer-game/MultiplayerGame";
+import NotFound from "./pages/notFound/NotFound";
 import rootEpic from './epics/rootEpic';
 import history from './history';
 import logo from "../assets/images/logo-landscape.svg";
@@ -85,6 +86,7 @@ const App = () => {
             />
 
             <Route path="/login/" component={Login} />
+            <Route path="*" component={NotFound} />
         </Switch>
 
       <footer>
